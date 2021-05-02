@@ -36,6 +36,7 @@ enable_testing()
 add_compile_definitions(APP_NAME="${CMAKE_PROJECT_NAME}")
 
 # setup dependencies
+add_compile_definitions(STB_IMAGE_IMPLEMENTATION)
 add_subdirectory(deps)
 link_libraries(fmt::fmt-header-only)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/)

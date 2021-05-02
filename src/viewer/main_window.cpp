@@ -6,6 +6,8 @@
 #include "common/log.h"
 #include "glad/gl.h"
 #include "glfw/include/GLFW/glfw3.h"
+#include "stb/stb_image.h"
+#include "viewer/icon.png.h"
 
 void glfw_error_callback(int err, const char* msg) {
   LOGE("glfw error:{}[{}]", msg, err);
@@ -40,6 +42,15 @@ MainWindow::MainWindow() {
   if (gladLoadGL(static_cast<GLADloadfunc>(glfwGetProcAddress)) == 0) {
     LOGE("glad load opengl failed");
     throw std::runtime_error("glad load opengl failed");
+  }
+
+  //  set window icon
+  {
+    GLFWimage icon;
+    icon.pixels = stbi_load_from_memory(icon_png, sizeof(icon_png), &icon.width,
+                                        &icon.height, nullptr, 4);
+    glfwSetWindowIcon(window_, 1, &icon);
+    stbi_image_free(icon.pixels);
   }
 
   glfwSwapInterval(2);
