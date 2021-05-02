@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(ROOT ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(${ROOT} CXX)
+project(${ROOT})
 
 set(CMAKE_GENERATOR Ninja)
 
@@ -32,8 +32,12 @@ endif()
 
 enable_testing()
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps/fmt)
+# setup dependencies
+add_subdirectory(deps)
 link_libraries(fmt::fmt-header-only)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/doctest)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/imgui)
+
 add_subdirectory(src)
 add_subdirectory(test)
