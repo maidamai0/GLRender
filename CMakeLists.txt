@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(ROOT ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-project(${ROOT})
+project(${ROOT} C CXX)
 
 set(CMAKE_GENERATOR Ninja)
 
@@ -32,12 +32,17 @@ endif()
 
 enable_testing()
 
+# definitions
+add_compile_definitions(APP_NAME="${CMAKE_PROJECT_NAME}")
+
 # setup dependencies
 add_subdirectory(deps)
 link_libraries(fmt::fmt-header-only)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/doctest)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/imgui)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glad/include)
 
 add_subdirectory(src)
 add_subdirectory(test)

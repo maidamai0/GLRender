@@ -1,2 +1,5 @@
-get_filename_component(APP ${CMAKE_CURRENT_SOURCE_DIR} NAME)
-add_executable(${APP} main.cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_subdirectory(app)
+add_subdirectory(common)
+add_subdirectory(viewer)
