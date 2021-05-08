@@ -14,3 +14,7 @@ Submodules:
 
 * [fmt](https://github.com/fmtlib/fmt)
 * [doctest](https://github.com/onqtam/doctest)
+
+## Build on linux
+
+> sudo apt-get install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
