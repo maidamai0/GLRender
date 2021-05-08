@@ -1,7 +1,7 @@
 # CMake based C++ template
 
-![Windows](https://github.com/maidamai0/cpp_template/actions/workflows/windows.yml/badge.svg)
-![Linux](https://github.com/maidamai0/cpp_template/actions/workflows/linux.yml/badge.svg)
+![Windows](https://github.com/maidamai0/GLRender/actions/workflows/windows.yml/badge.svg)
+![Linux](https://github.com/maidamai0/GLRender/actions/workflows/linux.yml/badge.svg)
 
 This is a C++ tempalte with following features:
 
@@ -15,6 +15,6 @@ Submodules:
 * [fmt](https://github.com/fmtlib/fmt)
 * [doctest](https://github.com/onqtam/doctest)
 
-## Build on linux
+## Build on Linux
 
 > sudo apt-get install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl1-mesa-dev
