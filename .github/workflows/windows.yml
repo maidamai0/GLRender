@@ -46,3 +46,42 @@ jobs:
       # Execute tests defined by the CMake configuration.  
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C $BUILD_TYPE
+
+    - uses: actions/upload-artifact@v2
+      with:
+          name: artifact
+          path: ${{github.workspace}}/build/bin/*.exe
+  release:
+      if: contains(github.ref, 'tags/v')
+      runs-on: windows-latest
+      needs: build
+
+      steps:
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            draft: false
+            prerelease: false
+
+        - name: Download a Build Artifact
+          uses: actions/download-artifact@v2
+          with:
+            name: artifact
+
+        - name: list all files
+          shell: cmd
+          run: dir /s
+
+        - name: Upload Release Asset
+          uses: svenstaro/upload-release-action@v2
+          with:
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            file: ./*.exe
+            tag: ${{ github.ref }}
+            overwrite: true
+            file_glob: true
