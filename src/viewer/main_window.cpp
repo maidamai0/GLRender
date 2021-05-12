@@ -13,6 +13,10 @@ void glfw_error_callback(int err, const char* msg) {
   LOGE("glfw error:{}[{}]", msg, err);
 }
 
+void glfw_resize_callback(GLFWwindow* wind, int width, int height) {
+  glfwSwapBuffers(wind);
+}
+
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
                        int mods) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
@@ -38,6 +42,7 @@ MainWindow::MainWindow() {
   }
 
   glfwSetKeyCallback(window_, glfw_key_callback);
+  glfwSetWindowSizeCallback(window_, glfw_resize_callback);
   glfwMakeContextCurrent(window_);
   if (gladLoadGL(static_cast<GLADloadfunc>(glfwGetProcAddress)) == 0) {
     LOGE("glad load opengl failed");
