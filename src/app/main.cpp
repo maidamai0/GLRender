@@ -1,8 +1,9 @@
 #include "common/log.h"
+#include "common/singleton.h"
 #include "viewer/main_window.h"
 
 auto main(int argc, char** argv) -> int {
-  MainWindow window;
+  auto& window = make_singleton<MainWindow>();
   window.Show();
   return 0;
 }

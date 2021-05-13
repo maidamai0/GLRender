@@ -1,9 +1,3 @@
-set(headers
-    imgui/imgui.h
-    imgui/backends/imgui_impl_glfw.h
-    imgui/backends/imgui_impl_opengl3.h
-)
-
 set(srcs
     imgui/imgui.cpp
     imgui/imgui_demo.cpp
@@ -14,7 +8,7 @@ set(srcs
     imgui/backends/imgui_impl_opengl3.cpp
 )
 
-add_library(imgui STATIC ${srcs} ${headers})
+add_library(imgui ${srcs})
 target_include_directories(imgui PUBLIC imgui ${CMAKE_CURRENT_SOURCE_DIR}/../glad/include/)
 target_link_libraries(imgui PUBLIC glad glfw)
 
@@ -24,3 +18,6 @@ if (MSVC)
         _CRT_SECURE_NO_DEPRECATE
         )
 endif()
+
+# add_executable(example imgui/examples/example_glfw_opengl3/main.cpp)
+# target_link_libraries(example PRIVATE imgui)
