@@ -1,4 +1,16 @@
 
+<a name="v0.1.0"></a>
+## [v0.1.0](https://github.com/maidamai0/GLRender/compare/v0.0.3...v0.1.0) (2021-05-13)
+
+### Bug Fixes
+
+* :bug: black window when resizing
+
+### Features
+
+* :sparkles: setup imgui
+
+
 <a name="v0.0.3"></a>
 ## [v0.0.3](https://github.com/maidamai0/GLRender/compare/v0.0.2...v0.0.3) (2021-05-08)
 
