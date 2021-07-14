@@ -19,16 +19,16 @@ enum class Alignment : unsigned char {
  * @brief Render text with alignment
  */
 inline void AlignedText(const std::string &text, Alignment align,
-                        const float &width = 0.0f) {
+                        const float &width = 0.0F) {
   const auto alignment = static_cast<unsigned char>(align);
   const auto text_size = ImGui::CalcTextSize(text.c_str());
   const auto wind_size = ImGui::GetContentRegionAvail();
   if (alignment & static_cast<unsigned char>(Alignment::kHorizontalCenter)) {
-    if (width < 0.1f) {
-      ImGui::SetCursorPosX((wind_size.x - text_size.x) * 0.5f);
+    if (width < 0.1F) {
+      ImGui::SetCursorPosX((wind_size.x - text_size.x) * 0.5F);
     } else {
       ImGui::SetCursorPosX(ImGui::GetCursorPosX() +
-                           (width - text_size.x) * 0.5f);
+                           (width - text_size.x) * 0.5F);
     }
   }
   if (alignment & static_cast<unsigned char>(Alignment::kVerticalCenter)) {
@@ -38,14 +38,17 @@ inline void AlignedText(const std::string &text, Alignment align,
   ImGui::TextUnformatted(text.c_str());
 }
 
-inline bool CheckButton(const std::string &label, bool checked,
-                        const ImVec2 &size) {
-  ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
-                        ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive]);
+inline auto CheckButton(const std::string &label, bool checked,
+                        const ImVec2 &size) -> bool {
   if (checked) {
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+                          ImGui::GetStyle().Colors[ImGuiCol_ButtonActive]);
     ImGui::PushStyleColor(ImGuiCol_Button,
                           ImGui::GetStyle().Colors[ImGuiCol_ButtonActive]);
   } else {
+    ImGui::PushStyleColor(
+        ImGuiCol_ButtonHovered,
+        ImGui::GetStyle().Colors[ImGuiCol_TabUnfocusedActive]);
     ImGui::PushStyleColor(ImGuiCol_Button,
                           ImGui::GetStyle().Colors[ImGuiCol_TitleBgActive]);
   }
@@ -58,13 +61,13 @@ inline bool CheckButton(const std::string &label, bool checked,
   return checked;
 }
 
-inline int ButtonTab(std::vector<std::string> &tabs, int &index) {
+inline auto ButtonTab(std::vector<std::string> &tabs, int &index) -> int {
   auto checked = 1 << index;
   std::string tab_names;
   std::for_each(tabs.begin(), tabs.end(),
                 [&tab_names](const auto item) { tab_names += item; });
   const auto tab_width = ImGui::GetContentRegionAvailWidth();
-  const auto tab_btn_width = tab_width / tabs.size();
+  const auto tab_btn_width = tab_width / static_cast<float>(tabs.size());
   const auto h = ImGui::CalcTextSize(tab_names.c_str()).y;
   ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
   ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, h);
@@ -82,8 +85,7 @@ inline int ButtonTab(std::vector<std::string> &tabs, int &index) {
     auto &tab = tabs[i];
 
     // if current tab is checkd, uncheck otheres
-    if (CheckButton(tab.c_str(), checked & (1 << i),
-                    ImVec2{tab_btn_width, 0})) {
+    if (CheckButton(tab, checked & (1 << i), ImVec2{tab_btn_width, 0})) {
       checked = 0;
       checked = 1 << i;
     }
@@ -108,8 +110,8 @@ inline int ButtonTab(std::vector<std::string> &tabs, int &index) {
 inline void SwitchButton(std::string &&icon, std::string &&label,
                          bool &checked) {
   float height = ImGui::GetFrameHeight();
-  float width = height * 1.55f;
-  float radius = height * 0.50f;
+  float width = height * 1.55F;
+  float radius = height * 0.50F;
   const auto frame_width = ImGui::GetContentRegionAvailWidth();
 
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
@@ -117,9 +119,10 @@ inline void SwitchButton(std::string &&icon, std::string &&label,
 
   ImGui::SetCursorPosX(frame_width - width);
   ImVec2 pos = ImGui::GetCursorScreenPos();
-  if (ImGui::InvisibleButton(label.c_str(), ImVec2(width, height)))
+  if (ImGui::InvisibleButton(label.c_str(), ImVec2(width, height))) {
     checked = !checked;
-  ImU32 col_bg;
+  }
+  ImU32 col_bg = 0;
   if (checked) {
     col_bg = ImColor(ImGui::GetStyle().Colors[ImGuiCol_ButtonActive]);
   } else {
@@ -131,7 +134,7 @@ inline void SwitchButton(std::string &&icon, std::string &&label,
   draw_list->AddCircleFilled(
       ImVec2(checked ? (pos.x + width - radius) : (pos.x + radius),
              pos.y + radius),
-      radius - 1.5f, IM_COL32_WHITE);
+      radius - 1.5F, IM_COL32_WHITE);
 }
 
 inline void Comb(std::string &&icon, std::string &&label,
@@ -139,8 +142,8 @@ inline void Comb(std::string &&icon, std::string &&label,
   const auto p_w = ImGui::GetContentRegionAvailWidth();
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
   ImGui::SameLine();
-  ImGui::SetCursorPosX(p_w - 150.0f - ImGui::GetStyle().FramePadding.x);
-  ImGui::SetNextItemWidth(150.0f);
+  ImGui::SetCursorPosX(p_w - 150.0F - ImGui::GetStyle().FramePadding.x);
+  ImGui::SetNextItemWidth(150.0F);
   ImGui::Combo(label.c_str(), &index, items.data(),
                static_cast<int>(items.size()));
 }
@@ -149,8 +152,8 @@ inline void InputInt(std::string &&icon, std::string &&label, int &value) {
   const auto p_w = ImGui::GetContentRegionAvailWidth();
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
   ImGui::SameLine();
-  ImGui::SetCursorPosX(p_w - 100.0f - ImGui::GetStyle().FramePadding.x);
-  ImGui::SetNextItemWidth(100.0f);
+  ImGui::SetCursorPosX(p_w - 100.0F - ImGui::GetStyle().FramePadding.x);
+  ImGui::SetNextItemWidth(100.0F);
   ImGui::InputInt((std::string("##") + label).c_str(), &value);
 }
 
