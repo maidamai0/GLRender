@@ -1,7 +1,4 @@
 #include "viewer/main_window.h"
-
-#include <stdexcept>
-
 #include "common/color.h"
 #include "common/log.h"
 #include "glad/gl.h"
@@ -11,12 +8,15 @@
 #include "imgui/imgui.h"
 #include "stb/stb_image.h"
 #include "viewer/icon.png.h"
+#include "viewer/mesh.h"
 #include "viewer/render_options_panel.h"
 #include "viewer/style.h"
 
+#include <GL/glext.h>
+
 namespace {
-constexpr auto kGLSLVersion = "#version 130";
-}
+constexpr auto kGLSLVersion = "#version 410";
+}  // namespace
 
 void glfw_error_callback(int err, const char* msg) {
   LOGE("glfw error:{}[{}]", msg, err);
@@ -41,9 +41,11 @@ MainWindow::MainWindow() {
     throw std::runtime_error("glfw initialize failed");
   }
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  // FIXME (tonghao): 2021-07-19
+  // mesh will not show if uncomment these lines
+  // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+  // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   window_ = glfwCreateWindow(800, 600, APP_NAME, nullptr, nullptr);
   if (window_ == nullptr) {
     LOGE("glfw create window failed");
@@ -78,10 +80,12 @@ MainWindow::MainWindow() {
   ImGui_ImplOpenGL3_Init(kGLSLVersion);
 
   style::init_style(1.0F, 1.0F);
+  glEnable(GL_DEBUG_OUTPUT);
 }
 
 void MainWindow::Show() {
   auto show_demo_window = true;
+  Mesh mesh(window_);
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwPollEvents();
@@ -91,6 +95,7 @@ void MainWindow::Show() {
     ImGui::NewFrame();
 
     RenderOptionsPanel::show();
+    mesh.Render();
 
     ImGui::Render();
     int display_w = 0;
