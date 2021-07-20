@@ -1,2 +1,2 @@
-add_library(glad src/gl.c)
+add_library(glad src/glad.c)
 target_include_directories(glad PRIVATE include)
