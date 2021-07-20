@@ -20,22 +20,16 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_DEBUG
 #endif
 
+#include "common/singleton.h"
 #include "spdlog/spdlog.h"
 #include "spdlog/stopwatch.h"
 
 namespace log_details {
 class Log {
- public:
+  enable_singleton(Log);
   Log();
 
-  Log(const Log&) = delete;
-  Log(Log&&) = delete;
-  auto operator=(const Log&) -> Log& = delete;
-  auto operator=(Log&&) -> Log& = delete;
-
+ public:
   ~Log();
-
- private:
-  static const Log log_;
 };
 }  // namespace log_details

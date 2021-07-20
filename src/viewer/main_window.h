@@ -5,18 +5,12 @@
 struct GLFWwindow;
 
 class MainWindow {
-  friend auto make_singleton<MainWindow>() -> MainWindow&;
+  enable_singleton(MainWindow);
   MainWindow();
 
  public:
   ~MainWindow() = default;
   void Show();
-
-  MainWindow(const MainWindow&) = delete;
-  auto operator=(const MainWindow&) -> MainWindow& = delete;
-
-  MainWindow(MainWindow&&) = delete;
-  auto operator=(MainWindow&&) -> MainWindow& = delete;
 
  private:
   GLFWwindow* window_ = nullptr;

@@ -6,8 +6,6 @@
 #include "spdlog/sinks/stdout_sinks.h"
 
 namespace log_details {
-const Log Log::log_;
-
 Log::Log() {
   auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
       fmt::format("logs/{}_log.txt", APP_NAME), true);
@@ -19,8 +17,8 @@ Log::Log() {
   spdlog::set_level(spdlog::level::debug);
   spdlog::enable_backtrace(10);
   spdlog::flush_on(spdlog::level::debug);
-  spdlog::set_pattern("[%Y-%m-%d %T.%e] [%L] [%s:%#] [%!] %v");
 
+  spdlog::set_pattern("%Y-%m-%d %T.%e %L %^%v%$ @%s:%#");
   SPDLOG_INFO(fmt::format("{} started", APP_NAME));
 }
 
