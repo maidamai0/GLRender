@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glad/gl.h"
+#include "glad/glad.h"
 #include "glfw/deps/linmath.h"
 #include "glfw/include/GLFW/glfw3.h"
 

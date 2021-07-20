@@ -1,18 +1,17 @@
 #include "viewer/main_window.h"
 #include "common/color.h"
 #include "common/log.h"
-#include "glad/gl.h"
-#include "glfw/include/GLFW/glfw3.h"
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-#include "imgui/imgui.h"
-#include "stb/stb_image.h"
 #include "viewer/icon.png.h"
 #include "viewer/mesh.h"
 #include "viewer/render_options_panel.h"
 #include "viewer/style.h"
 
-#include <GL/glext.h>
+#include "GLFW/glfw3.h"
+#include "glad/glad.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
+#include "stb/stb_image.h"
 
 namespace {
 constexpr auto kGLSLVersion = "#version 410";
@@ -56,7 +55,7 @@ MainWindow::MainWindow() {
   glfwSetKeyCallback(window_, glfw_key_callback);
   glfwSetWindowSizeCallback(window_, glfw_resize_callback);
   glfwMakeContextCurrent(window_);
-  if (gladLoadGL(static_cast<GLADloadfunc>(glfwGetProcAddress)) == 0) {
+  if (gladLoadGL() == 0) {
     LOGE("glad load opengl failed");
     throw std::runtime_error("glad load opengl failed");
   }
