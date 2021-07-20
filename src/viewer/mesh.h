@@ -15,7 +15,7 @@ class Mesh {
                         {0.F, 0.6F, 0.F, 0.F, 1.F}};
 
   // vertex shader
-  static constexpr char* vertex_shader_text =
+  static constexpr auto vertex_shader_text =
       "#version 410\n"
       "uniform mat4 MVP;\n"
       "in vec3 Color;\n"
@@ -28,7 +28,7 @@ class Mesh {
       "}\n";
 
   // fragment shader
-  static constexpr char* fragment_shader_text =
+  static constexpr auto fragment_shader_text =
       "#version 410\n"
       "in vec3 Frag_Color;\n"
       "void main()\n"
