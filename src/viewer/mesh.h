@@ -38,6 +38,10 @@ class Mesh {
 
  public:
   explicit Mesh(GLFWwindow* window) : window_(window) {
+    // vao
+    glGenVertexArrays(1, &vao_);
+    glBindVertexArray(vao_);
+
     // vertex buffer
     GLuint vertex_buffer{0};
     glGenBuffers(1, &vertex_buffer);
@@ -89,12 +93,14 @@ class Mesh {
     mat4x4_mul(mvp, p, m);
 
     glUseProgram(program_);
+    glBindVertexArray(vao_);
     glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, (const GLfloat*)mvp);
     glDrawArrays(GL_TRIANGLES, 0, 3);
   }
 
  private:
   GLFWwindow* window_ = nullptr;
+  GLuint vao_ = 0;
   GLuint program_ = 0;
   GLuint mvp_location_ = 0;
 };
