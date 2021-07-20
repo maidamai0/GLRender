@@ -2,8 +2,8 @@
 #include <string>
 #include "common/color.h"
 #include "common/log.h"
+#include "mesh/triangle.h"
 #include "viewer/icon.png.h"
-#include "viewer/mesh.h"
 #include "viewer/render_options_panel.h"
 #include "viewer/style.h"
 
@@ -199,7 +199,7 @@ MainWindow::MainWindow() {
 
 void MainWindow::Show() {
   auto show_demo_window = true;
-  Mesh mesh(window_);
+  glr::mesh::Triangle triangle(window_);
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwPollEvents();
@@ -209,7 +209,7 @@ void MainWindow::Show() {
     ImGui::NewFrame();
 
     RenderOptionsPanel::show();
-    mesh.Render();
+    triangle.Render();
 
     ImGui::Render();
     int display_w = 0;

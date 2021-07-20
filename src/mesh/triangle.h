@@ -3,8 +3,10 @@
 #include "glad/glad.h"
 #include "glfw/deps/linmath.h"
 #include "glfw/include/GLFW/glfw3.h"
+#include "mesh/mesh.h"
 
-class Mesh {
+namespace glr::mesh {
+class Triangle : public Mesh {
  private:
   // vertex
   static constexpr struct {
@@ -37,7 +39,7 @@ class Mesh {
       "}\n";
 
  public:
-  explicit Mesh(GLFWwindow* window) : window_(window) {
+  explicit Triangle(GLFWwindow* window) : window_(window) {
     // vao
     glGenVertexArrays(1, &vao_);
     glBindVertexArray(vao_);
@@ -77,7 +79,7 @@ class Mesh {
                           sizeof(vertices_data[0]), (void*)(sizeof(float) * 2));
   }
 
-  void Render() {
+  void Render() override {
     mat4x4 m;
     mat4x4_identity(m);
     mat4x4_rotate_Z(m, m, static_cast<float>(glfwGetTime()));
@@ -98,9 +100,14 @@ class Mesh {
     glDrawArrays(GL_TRIANGLES, 0, 3);
   }
 
+  ~Triangle() override = default;
+  no_copy(Triangle);
+  no_move(Triangle);
+
  private:
   GLFWwindow* window_ = nullptr;
   GLuint vao_ = 0;
   GLuint program_ = 0;
   GLuint mvp_location_ = 0;
 };
+}  // namespace glr::mesh

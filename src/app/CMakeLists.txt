@@ -5,4 +5,4 @@ if(WIN32)
 endif()
 
 add_executable(${app} WIN32 ${srcs})
-target_link_libraries(${app} common viewer)
+target_link_libraries(${app} common viewer mesh)
