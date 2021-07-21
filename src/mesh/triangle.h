@@ -1,8 +1,9 @@
 #pragma once
 
 #include "glad/glad.h"
+
+#include "GLFW/glfw3.h"
 #include "glfw/deps/linmath.h"
-#include "glfw/include/GLFW/glfw3.h"
 #include "mesh/mesh.h"
 
 namespace glr::mesh {

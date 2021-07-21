@@ -15,7 +15,7 @@ class Mesh {
   no_copy(Mesh);
   no_move(Mesh);
 
- private:
+ protected:
   const std::string file_path_;
 };
 }  // namespace glr::mesh

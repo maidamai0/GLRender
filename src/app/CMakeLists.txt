@@ -6,3 +6,10 @@ endif()
 
 add_executable(${app} WIN32 ${srcs})
 target_link_libraries(${app} common viewer mesh)
+
+add_custom_command(
+    TARGET ${app}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/models $<TARGET_FILE_DIR:${app}>/models
+    COMMENT "Copy models"
+)

@@ -2,6 +2,7 @@
 #include <string>
 #include "common/color.h"
 #include "common/log.h"
+#include "mesh/ply.h"
 #include "mesh/triangle.h"
 #include "viewer/icon.png.h"
 #include "viewer/render_options_panel.h"
@@ -200,6 +201,7 @@ MainWindow::MainWindow() {
 void MainWindow::Show() {
   auto show_demo_window = true;
   glr::mesh::Triangle triangle(window_);
+  glr::mesh::PLY bunny(window_, "models/bunny.ply");
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwPollEvents();
@@ -210,6 +212,7 @@ void MainWindow::Show() {
 
     RenderOptionsPanel::show();
     triangle.Render();
+    bunny.Render();
 
     ImGui::Render();
     int display_w = 0;
