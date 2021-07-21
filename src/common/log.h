@@ -24,7 +24,6 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/stopwatch.h"
 
-namespace log_details {
 class Log {
   enable_singleton(Log);
   Log();
@@ -32,4 +31,3 @@ class Log {
  public:
   ~Log();
 };
-}  // namespace log_details

@@ -3,7 +3,7 @@
 #include "viewer/main_window.h"
 
 auto main(int argc, char** argv) -> int {
-  auto& log = make_singleton<log_details::Log>();
+  auto& log = make_singleton<Log>();
   auto& window = make_singleton<MainWindow>();
   window.Show();
   return 0;

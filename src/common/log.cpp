@@ -5,7 +5,6 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/stdout_sinks.h"
 
-namespace log_details {
 Log::Log() {
   auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
       fmt::format("logs/{}_log.txt", APP_NAME), true);
@@ -25,4 +24,3 @@ Log::Log() {
 Log::~Log() {
   SPDLOG_INFO(fmt::format("{} terminated", APP_NAME));
 }
-}  // namespace log_details
