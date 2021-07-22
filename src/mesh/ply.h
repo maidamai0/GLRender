@@ -31,7 +31,7 @@ class PLY : public Mesh {
 
  private:
   std::vector<std::array<double, 3>> vertices_;
-  std::vector<std::vector<size_t>> faces_indices_;
+  std::vector<unsigned int> faces_indices_;
   // std::vector<std::array<double, 3>> normals_;
   // std::vector<std::array<double, 3>> texcoords_;
   // std::vector<std::array<double, 3>> colors_;
