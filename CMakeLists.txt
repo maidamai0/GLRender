@@ -44,6 +44,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/doctest)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/imgui)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/spdlog/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glad/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glfw/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/happly)
 
 add_subdirectory(src)
