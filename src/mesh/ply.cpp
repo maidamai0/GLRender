@@ -15,11 +15,11 @@ static constexpr auto vertex_shader_text =
     "#version 410\n"
     "uniform mat4 MVP;\n"
     "in vec3 Color;\n"
-    "in vec2 Position;\n"
+    "in vec3 Position;\n"
     "out vec3 Frag_Color;\n"
     "void main()\n"
     "{\n"
-    "    gl_Position = MVP * vec4(Position, 0.0, 1.0);\n"
+    "    gl_Position = MVP * vec4(Position, 1.0);\n"
     "    Frag_Color = Color;\n"
     "}\n";
 
@@ -87,7 +87,7 @@ PLY::PLY(GLFWwindow* window, std::string path) : Mesh(std::move(path)), window_(
   // glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), (void*)(sizeof(float) * 2));
 
   // set draw type
-  glPolygonMode(GL_FRONT_FACE, GL_LINE);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void PLY::Render() {
