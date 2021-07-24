@@ -1,4 +1,3 @@
-
 #include "mesh/ply.h"
 #include <algorithm>
 #include <array>
@@ -6,31 +5,38 @@
 #include <vector>
 
 #include "common/log.h"
-#include "glfw/deps/linmath.h"
+#include "glm/fwd.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 #include "happly/happly.h"
 #include "spdlog/fmt/bundled/format.h"
 
 // vertex shader
-static constexpr auto vertex_shader_text =
-    "#version 410\n"
-    "uniform mat4 MVP;\n"
-    "in vec3 Color;\n"
-    "in vec3 Position;\n"
-    "out vec3 Frag_Color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_Position = MVP * vec4(Position, 1.0);\n"
-    "    Frag_Color = Color;\n"
-    "}\n";
+static constexpr auto vertex_shader_text = R"(
+#version 410
+
+layout(location = 0) in vec3 position;
+
+uniform mat4 projection;
+uniform mat4 view;
+uniform mat4 model;
+
+void main() {
+  gl_Position = projection * view * model * vec4(position, 1.0);
+};
+)";
 
 // fragment shader
-static constexpr auto fragment_shader_text =
-    "#version 410\n"
-    "in vec3 Frag_Color;\n"
-    "void main()\n"
-    "{\n"
-    "    gl_FragColor = vec4(0.8, 0.4, 0.2, 1.0);\n"
-    "}\n";
+static constexpr auto fragment_shader_text = R"(
+#version 410
+
+uniform vec3 color;
+
+void main() {
+  gl_FragColor = vec4(color, 1.0);
+};
+)";
 
 namespace glr::mesh {
 PLY::PLY(GLFWwindow* window, std::string path) : Mesh(std::move(path)), window_(window) {
@@ -62,9 +68,10 @@ PLY::PLY(GLFWwindow* window, std::string path) : Mesh(std::move(path)), window_(
   glAttachShader(program_, fragment_shader);
   glLinkProgram(program_);
 
-  mvp_location_ = glGetUniformLocation(program_, "MVP");
-  GLuint vpos_location = glGetAttribLocation(program_, "Position");
-  GLuint vcol_location = glGetAttribLocation(program_, "Color");
+  projection_location_ = glGetUniformLocation(program_, "projection");
+  view_location_ = glGetUniformLocation(program_, "view");
+  model_location_ = glGetUniformLocation(program_, "model");
+  color_location_ = glGetUniformLocation(program_, "color");
 
   // vao
   glGenVertexArrays(1, &vao_);
@@ -75,40 +82,35 @@ PLY::PLY(GLFWwindow* window, std::string path) : Mesh(std::move(path)), window_(
   glGenBuffers(1, &vertex_buffer);
   glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_[0]) * vertices_.size(), vertices_.data(), GL_STATIC_DRAW);
-  glVertexAttribPointer(vpos_location, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), nullptr);
-  glEnableVertexAttribArray(vpos_location);
+  glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), nullptr);
+  glEnableVertexAttribArray(0);
 
   GLuint ebo = 0;
   glGenBuffers(1, &ebo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * faces_indices_.size(), faces_indices_.data(), GL_STATIC_DRAW);
 
-  // glEnableVertexAttribArray(vcol_location);
-  // glVertexAttribPointer(vcol_location, 3, GL_FLOAT, GL_FALSE, sizeof(vertices_[0]), (void*)(sizeof(float) * 2));
-
   // set draw type
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void PLY::Render() {
-  mat4x4 m;
-  mat4x4_identity(m);
-  mat4x4_rotate_Y(m, m, static_cast<float>(glfwGetTime() + 20));
-  mat4x4_rotate_X(m, m, static_cast<float>(glfwGetTime()));
-
-  int height = 0, width = 0;
+  int height = 0;
+  int width = 0;
   glfwGetFramebufferSize(window_, &width, &height);
   float ratio = width / static_cast<float>(height);
 
-  mat4x4 p;
-  mat4x4_ortho(p, -ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
-
-  mat4x4 mvp;
-  mat4x4_mul(mvp, p, m);
+  glm::mat4 projection = glm::perspective(glm::radians(20.0F), ratio, 0.1F, 100.0F);
+  glm::mat4 view = camera_.GetViewMatrix();
+  glm::mat4 model = glm::scale(glm::mat4(1.0F), glm::vec3(5.0F, 5.0F, 5.0F));
+  model = glm::translate(model, glm::vec3(0.0F, -0.1F, -0.0F));
 
   glUseProgram(program_);
   glBindVertexArray(vao_);
-  glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, (const GLfloat*)mvp);
+  glUniformMatrix4fv(projection_location_, 1, GL_FALSE, glm::value_ptr(projection));
+  glUniformMatrix4fv(view_location_, 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
+  glUniform3fv(color_location_, 1, glm::value_ptr(glm::vec3(0.8F, 0.4F, 0.2F)));
   glDrawElements(GL_TRIANGLES, faces_indices_.size(), GL_UNSIGNED_INT, nullptr);
 }
 }  // namespace glr::mesh

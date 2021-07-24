@@ -17,6 +17,7 @@
 #include "GLFW/glfw3.h"
 
 #include "mesh/mesh.h"
+#include "viewer/camera.h"
 
 namespace glr::mesh {
 class PLY : public Mesh {
@@ -39,6 +40,10 @@ class PLY : public Mesh {
   GLFWwindow* window_ = nullptr;
   GLuint vao_ = 0;
   GLuint program_ = 0;
-  GLuint mvp_location_ = 0;
+  GLint projection_location_ = 0;
+  GLint view_location_ = 0;
+  GLint model_location_ = 0;
+  GLint color_location_ = 0;
+  Camera camera_{{0.0F, 0.0F, 5.0F}};
 };
 }  // namespace glr::mesh
