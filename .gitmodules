@@ -20,3 +20,7 @@
 	path = deps/happly/happly
 	url = https://github.com/nmwsharp/happly.git
 	branch = master
+[submodule "deps/signal_slot/signal_slot"]
+	path = deps/signal_slot/signal_slot
+	url = https://github.com/NoAvailableAlias/nano-signal-slot.git
+	branch = master

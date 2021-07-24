@@ -47,6 +47,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glad/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glfw/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/happly)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/glm)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/signal_slot)
 
 add_subdirectory(src)
 add_subdirectory(test)

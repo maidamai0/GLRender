@@ -1,3 +1,4 @@
+#pragma once
 /**
  * @file camera.h
  * @author tonghao.yuan (yuantonghao@gmail.com)
@@ -78,12 +79,14 @@ class Camera {
 
   auto ProcessMouseScroll(float yoffset) {
     zoom_ -= yoffset;
+  }
 
-    // if (zoom_ < 1.0f) {
-    //     zoom_ = 1.0f;
-    // }
+  auto SetAspect(const float aspect) {
+    aspect_ = aspect;
+  }
 
-    LOGD("zoom is {}", zoom_);
+  [[nodiscard]] auto GetAspect() const {
+    return aspect_;
   }
 
  private:
@@ -111,4 +114,7 @@ class Camera {
   // euler angles
   float yaw_{-0.0F};
   float pitch_{0.0F};
+
+  // width/height
+  float aspect_ = 1.0F;
 };

@@ -13,16 +13,13 @@
 #include <vector>
 
 #include "glad/glad.h"
-
-#include "GLFW/glfw3.h"
-
 #include "mesh/mesh.h"
-#include "viewer/camera.h"
+#include "render/camera.h"
 
 namespace glr::mesh {
 class PLY : public Mesh {
  public:
-  explicit PLY(GLFWwindow* window, std::string);
+  explicit PLY(std::string);
   ~PLY() override = default;
 
   no_copy(PLY);
@@ -37,13 +34,6 @@ class PLY : public Mesh {
   // std::vector<std::array<double, 3>> texcoords_;
   // std::vector<std::array<double, 3>> colors_;
 
-  GLFWwindow* window_ = nullptr;
   GLuint vao_ = 0;
-  GLuint program_ = 0;
-  GLint projection_location_ = 0;
-  GLint view_location_ = 0;
-  GLint model_location_ = 0;
-  GLint color_location_ = 0;
-  Camera camera_{{0.0F, 0.0F, 5.0F}};
 };
 }  // namespace glr::mesh

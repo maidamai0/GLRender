@@ -5,7 +5,7 @@ if(WIN32)
 endif()
 
 add_executable(${app} WIN32 ${srcs})
-target_link_libraries(${app} common viewer mesh)
+target_link_libraries(${app} common viewer mesh render)
 
 add_custom_command(
     TARGET ${app}

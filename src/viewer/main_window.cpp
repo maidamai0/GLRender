@@ -1,9 +1,10 @@
 #include "viewer/main_window.h"
-#include <string>
 #include "common/color.h"
 #include "common/log.h"
+#include "common/swtich.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
+#include "render/renderer.h"
 #include "viewer/icon.png.h"
 #include "viewer/render_options_panel.h"
 #include "viewer/style.h"
@@ -14,6 +15,8 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/imgui.h"
 #include "stb/stb_image.h"
+
+#include <string>
 
 namespace {
 constexpr auto kGLSLVersion = "#version 410";
@@ -201,23 +204,34 @@ MainWindow::MainWindow() {
 void MainWindow::Show() {
   auto show_demo_window = true;
   glr::mesh::Triangle triangle(window_);
-  glr::mesh::PLY bunny(window_, "models/bunny.ply");
+  glr::mesh::PLY bunny("models/bunny.ply");
+
+  // FIXME (tonghao): 2021-07-24
+  // use shared_ptr
+  glr::render::Renderder renderer;
+  // renderer.AddMesh(&triangle);
+  renderer.AddMesh(&bunny);
+
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT);
     glfwPollEvents();
+
+    int display_w = 0;
+    int display_h = 0;
+    glfwGetFramebufferSize(window_, &display_w, &display_h);
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
+    make_singleton<common::Switch>().ZoomChanged.fire(ImGui::GetIO().MouseWheel);
+    make_singleton<common::Switch>().AspectChanged.fire(
+        (static_cast<float>(display_w) / static_cast<float>(display_h)));
+
     RenderOptionsPanel::show();
-    triangle.Render();
-    bunny.Render();
+    renderer.Update();
 
     ImGui::Render();
-    int display_w = 0;
-    int display_h = 0;
-    glfwGetFramebufferSize(window_, &display_w, &display_h);
     glViewport(0, 0, display_w, display_h);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
