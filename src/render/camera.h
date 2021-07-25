@@ -91,9 +91,10 @@ class Camera {
 
  private:
   void update_camera_vectors() {
-    glm::vec3 front{static_cast<float>(cos(glm::radians(yaw_)) * cos(glm::radians(pitch_))),
-                    static_cast<float>(sin(glm::radians(pitch_))),
-                    static_cast<float>(sin(glm::radians(yaw_)) * cos(glm::radians(pitch_)))};
+    const auto radians_yaw = glm::radians(yaw_);
+    const auto radians_pitch = glm::radians(pitch_);
+    glm::vec3 front{static_cast<float>(cos(radians_yaw) * cos(radians_pitch)), static_cast<float>(sin(radians_pitch)),
+                    static_cast<float>(sin(radians_yaw) * cos(radians_pitch))};
     front_ = glm::normalize(front);
     right_ = glm::normalize(glm::cross(front_, world_up_));
     up_ = glm::normalize(glm::cross(right_, front_));

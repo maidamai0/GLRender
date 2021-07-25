@@ -1,6 +1,8 @@
 #include "render/renderer.h"
+#include "common/singleton.h"
 #include "common/swtich.h"
 
+#include "glm/fwd.hpp"
 #include "glm/glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
@@ -58,6 +60,7 @@ Renderder::Renderder() {
 
   make_singleton<common::Switch>().ZoomChanged.connect<&Renderder::on_zoom_chaned>(this);
   make_singleton<common::Switch>().AspectChanged.connect<&Renderder::on_aspect_changed>(this);
+  make_singleton<common::Switch>().YawPitchChanged.connect<&Renderder::on_yaw_pich_changed>(this);
 }
 
 void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
@@ -69,8 +72,7 @@ void Renderder::Update() {
 
   glm::mat4 projection = glm::perspective(glm::radians(camera_.GetZoom()), camera_.GetAspect(), 0.1F, 100.0F);
   glm::mat4 view = camera_.GetViewMatrix();
-  glm::mat4 model = glm::scale(glm::mat4(1.0F), glm::vec3(10.0F, 10.0F, 10.0F));
-  model = glm::translate(model, glm::vec3(0.0F, -0.1F, 0.0F));
+  glm::mat4 model = glm::mat4(1.0F);
 
   glUniformMatrix4fv(projection_location_, 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix4fv(view_location_, 1, GL_FALSE, glm::value_ptr(view));
@@ -88,6 +90,10 @@ void Renderder::on_zoom_chaned(const float zoom) {
 
 void Renderder::on_aspect_changed(const float aspect) {
   camera_.SetAspect(aspect);
+}
+
+void Renderder::on_yaw_pich_changed(const int yaw, const int pitch) {
+  camera_.ProcessMouseMovement(static_cast<float>(-yaw), static_cast<float>(pitch), true);
 }
 
 void Renderder::on_color_changed(const glm::vec3& color) {

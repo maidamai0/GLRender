@@ -14,5 +14,6 @@ class Switch {
   Nano::Signal<void(const float zoom)> ZoomChanged;
   Nano::Signal<void(const float zoom)> AspectChanged;
   Nano::Signal<void(const glm::vec3& color)> ColorChanged;
+  Nano::Signal<void(const int mouse_x, const int mouse_y)> YawPitchChanged;
 };
 }  // namespace common

@@ -1,6 +1,7 @@
 #include "viewer/main_window.h"
 #include "common/color.h"
 #include "common/log.h"
+#include "common/singleton.h"
 #include "common/swtich.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
@@ -227,6 +228,9 @@ void MainWindow::Show() {
     make_singleton<common::Switch>().ZoomChanged.fire(ImGui::GetIO().MouseWheel);
     make_singleton<common::Switch>().AspectChanged.fire(
         (static_cast<float>(display_w) / static_cast<float>(display_h)));
+    if (ImGui::IsMouseDown(0)) {
+      make_singleton<common::Switch>().YawPitchChanged.fire(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+    }
 
     RenderOptionsPanel::show();
     renderer.Update();
