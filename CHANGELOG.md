@@ -1,4 +1,29 @@
 
+<a name="v0.2.0"></a>
+## [v0.2.0](https://github.com/maidamai0/GLRender/compare/v0.1.0...v0.2.0) (2021-07-24)
+
+### Bug Fixes
+
+* compile error
+* compile error on windows
+* fix mesh show error above 3.1
+* compiler error
+* button tab hover color
+
+### Features
+
+* add renderer
+* 3d bunny
+* bunny come out
+* ply render(not complete)
+* add opengl debug
+* upgrade deps
+* upgrade glad
+* upgrade glfw
+* upgrade glad
+* render triangle
+
+
 <a name="v0.1.0"></a>
 ## [v0.1.0](https://github.com/maidamai0/GLRender/compare/v0.0.3...v0.1.0) (2021-05-13)
 

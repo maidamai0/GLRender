@@ -25,7 +25,6 @@ void show() {
   {
     static auto point_width = 1;
     ImGuiHelper::InputInt(ICON_FK_CIRCLE, "Point Width", point_width);
-    ImGui::Separator();
   }
 }
 } // namespace PointsRenderOptions

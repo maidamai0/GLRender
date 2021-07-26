@@ -79,7 +79,7 @@ void show() {
     static auto index = 0;
     std::vector<const char *> items{"disabled", "f:normal"};
     ImGuiHelper::Comb(ICON_FK_ARROW_CIRCLE_O_UP, "Vecor field", items, index);
-    ImGui::Separator();
+    // ImGui::Separator();
   }
 }
 } // namespace SurfaceRenderOptions
