@@ -15,8 +15,10 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/imgui.h"
+#include "nfd.hpp"
 #include "stb/stb_image.h"
 
+#include <array>
 #include <string>
 
 namespace {
@@ -199,19 +201,16 @@ MainWindow::MainWindow() {
   ImGui_ImplGlfw_InitForOpenGL(window_, true);
   ImGui_ImplOpenGL3_Init(kGLSLVersion);
 
+  renderer_ = std::make_unique<glr::render::Renderder>();
+  NFD::Init();
+  make_singleton<common::Switch>().OpenFileClicked.connect<&MainWindow::on_open_file>(this);
   style::init_style(1.0F, 1.0F);
 }
 
 void MainWindow::Show() {
   auto show_demo_window = true;
-  glr::mesh::Triangle triangle(window_);
-  glr::mesh::PLY bunny("models/bunny.ply");
-
-  // FIXME (tonghao): 2021-07-24
-  // use shared_ptr
-  glr::render::Renderder renderer;
-  // renderer.AddMesh(&triangle);
-  renderer.AddMesh(&bunny);
+  // glr::mesh::Triangle triangle(window_);
+  // renderer_->AddMesh(&triangle);
 
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -233,7 +232,7 @@ void MainWindow::Show() {
     }
 
     RenderOptionsPanel::show();
-    renderer.Update();
+    renderer_->Update();
 
     ImGui::Render();
     glViewport(0, 0, display_w, display_h);
@@ -245,7 +244,24 @@ void MainWindow::Show() {
   ImGui_ImplOpenGL3_Shutdown();
   ImGui_ImplGlfw_Shutdown();
   ImGui::DestroyContext();
-
+  NFD::Quit();
   glfwDestroyWindow(window_);
   glfwTerminate();
+}
+
+void MainWindow::on_open_file() {
+  nfdchar_t* outPath = nullptr;
+  std::array<nfdfilteritem_t, 1> filterItem = {{"mesh", "ply"}};
+  nfdresult_t result = NFD_OpenDialog(&outPath, filterItem.data(), filterItem.size(), nullptr);
+  if (result == NFD_OKAY) {
+    // FIXME (tonghao): 2021-07-26
+    // use shared ptr
+    renderer_->AddMesh(new glr::mesh::PLY(outPath));
+    LOGI(outPath);
+    NFD_FreePath(outPath);
+  } else if (result == NFD_CANCEL) {
+    LOGW("User pressed cancel");
+  } else {
+    LOGW("Open file faield:{}", NFD_GetError());
+  }
 }

@@ -24,3 +24,7 @@
 	path = deps/signal_slot/signal_slot
 	url = https://github.com/NoAvailableAlias/nano-signal-slot.git
 	branch = master
+[submodule "deps/nativefiledialog_extended"]
+	path = deps/nativefiledialog_extended
+	url = https://github.com/btzy/nativefiledialog-extended.git
+	branch = master

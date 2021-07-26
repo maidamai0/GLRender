@@ -4,6 +4,8 @@
 #include <utility>
 #include <vector>
 
+#include "common/singleton.h"
+#include "common/swtich.h"
 #include "fork_awesome.h"
 #include "global_render_options.h"
 #include "imgui/imgui.h"
@@ -19,14 +21,33 @@ void show() {
   ImGuiWindowFlags option_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize;
   const auto parent_size = ImGui::GetMainViewport()->WorkSize;
   const auto parent_pos = ImGui::GetMainViewport()->WorkPos;
-  ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
-  ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
-                           parent_pos.y + layout::kMargin});
-  ImGui::SetNextWindowBgAlpha(0.5f);
-  static float render_options_height = 0;
+
+  static auto file_panel_bottom = 0.0F;
+  // file panel
+  {
+    ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
+    ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
+                             parent_pos.y + layout::kMargin});
+    ImGui::SetNextWindowBgAlpha(0.5f);
+    ImGui::Begin("FilePanel", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
+
+    ImGuiHelper::AlignedText(std::string(ICON_FK_FILE) + "    ", ImGuiHelper::Alignment::kVerticalCenter);
+    ImGui::SameLine();
+
+    if (ImGui::Button("Load mesh from file...")) {
+      make_singleton<common::Switch>().OpenFileClicked.fire();
+    }
+    file_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
+    ImGui::End();
+  }
 
   // options panel
+  static float options_panel_bottom = 0;
   {
+    ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
+    ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
+                             file_panel_bottom + layout::kPanelSpacing});
+    ImGui::SetNextWindowBgAlpha(0.5F);
     ImGui::Begin("RenderOptionsWindow", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
     // tabs
     static auto tabs = std::vector<std::string>{"Surface", "Line", "Points", "Global"};
@@ -41,15 +62,16 @@ void show() {
                                          GlobRenderOptions::show};
       options[selected_index]();
     }
-    render_options_height = ImGui::GetWindowSize().y;
+    options_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
     ImGui::End();
   }
 
   // debug panel
+  static auto debug_panel_bottom = 0.0F;
   {
     ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
     ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
-                             render_options_height + 20});
+                             options_panel_bottom + layout::kPanelSpacing});
     ImGui::SetNextWindowBgAlpha(0.5f);
     ImGui::Begin("DebugPanel", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
 
@@ -66,6 +88,7 @@ void show() {
     if (show_demo) {
       ImGui::ShowDemoWindow();
     }
+    debug_panel_bottom = ImGui::GetWindowSize().y;
     ImGui::End();
   }
 }
