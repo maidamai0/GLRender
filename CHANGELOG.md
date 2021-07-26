@@ -1,4 +1,18 @@
 
+<a name="v0.3.0"></a>
+## [v0.3.0](https://github.com/maidamai0/GLRender/compare/v0.2.0...v0.3.0) (2021-07-26)
+
+### Bug Fixes
+
+* hide combobox label
+
+### Features
+
+* load mesh from file
+* auto resize render options panel
+* move mesh
+
+
 <a name="v0.2.0"></a>
 ## [v0.2.0](https://github.com/maidamai0/GLRender/compare/v0.1.0...v0.2.0) (2021-07-24)
 
