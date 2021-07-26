@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 
 namespace ImGuiHelper {
 
@@ -154,6 +155,35 @@ inline void InputInt(std::string &&icon, std::string &&label, int &value) {
   ImGui::SetCursorPosX(p_w - 100.0F - ImGui::GetStyle().FramePadding.x);
   ImGui::SetNextItemWidth(100.0F);
   ImGui::InputInt((std::string("##") + label).c_str(), &value);
+}
+
+inline void ListSeparator(float indent = 30.0F) {
+  ImGuiWindow *window = ImGui::GetCurrentWindow();
+  if (window->SkipItems) {
+    return;
+  }
+
+  ImGuiContext &g = *GImGui;
+
+  float thickness_draw = 1.0F;
+  float thickness_layout = 0.0F;
+  // Horizontal Separator
+  float x1 = window->Pos.x + indent;
+  float x2 = window->Pos.x + window->Size.x;
+
+  // FIXME-WORKRECT: old hack (#205) until we decide of consistent behavior with WorkRect/Indent and Separator
+  if (g.GroupStack.Size > 0 && g.GroupStack.back().WindowID == window->ID) {
+    x1 += window->DC.Indent.x;
+  }
+
+  // We don't provide our width to the layout so that it doesn't get feed back into AutoFit
+  const ImRect bb(ImVec2(x1, window->DC.CursorPos.y), ImVec2(x2, window->DC.CursorPos.y + thickness_draw));
+  ImGui::ItemSize(ImVec2(0.0F, thickness_layout));
+  const bool item_visible = ImGui::ItemAdd(bb, 0);
+  if (item_visible) {
+    // Draw
+    window->DrawList->AddLine(bb.Min, ImVec2(bb.Max.x, bb.Min.y), ImGui::GetColorU32(ImGuiCol_Separator));
+  }
 }
 
 }  // namespace ImGuiHelper

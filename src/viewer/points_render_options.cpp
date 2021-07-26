@@ -7,19 +7,19 @@
 
 namespace PointsRenderOptions {
 void show() {
-  ImGui::Separator();
+  ImGuiHelper::ListSeparator();
 
   {
     static auto index = 0;
     std::vector<const char *> items{"vertices", "licks"};
     ImGuiHelper::Comb(ICON_FK_CUBE, "Drawables", items, index);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
   }
 
   {
     static bool visible = true;
     ImGuiHelper::SwitchButton(ICON_FK_EYE, "Visible", visible);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
   }
 
   {

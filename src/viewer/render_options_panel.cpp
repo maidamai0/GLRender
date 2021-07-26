@@ -31,7 +31,7 @@ void show() {
     ImGui::SetNextWindowBgAlpha(0.5f);
     ImGui::Begin("FilePanel", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
 
-    ImGuiHelper::AlignedText(std::string(ICON_FK_FILE) + "    ", ImGuiHelper::Alignment::kVerticalCenter);
+    ImGuiHelper::AlignedText(std::string(ICON_FK_FILE) + " ", ImGuiHelper::Alignment::kVerticalCenter);
     ImGui::SameLine();
 
     if (ImGui::Button("Load mesh from file...")) {
@@ -77,14 +77,13 @@ void show() {
 
     auto static show_metrics = false;
     ImGuiHelper::SwitchButton(ICON_FK_WRENCH, "Window Metrics", show_metrics);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
     if (show_metrics) {
       ImGui::ShowMetricsWindow();
     }
 
     auto static show_demo = false;
     ImGuiHelper::SwitchButton(ICON_FK_ROCKET, "Demo", show_demo);
-    // ImGui::Separator();
     if (show_demo) {
       ImGui::ShowDemoWindow();
     }

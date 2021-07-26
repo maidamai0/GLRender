@@ -7,25 +7,25 @@
 
 namespace LineRenderOptions {
 void show() {
-  ImGui::Separator();
+  ImGuiHelper::ListSeparator();
 
   {
     static auto index = 0;
     std::vector<const char *> items{"edges", "borders"};
     ImGuiHelper::Comb(std::string(ICON_FK_CUBE), "Drawables", items, index);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
   }
 
   {
     static bool visible = true;
     ImGuiHelper::SwitchButton(ICON_FK_EYE, "Visible", visible);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
   }
 
   {
     static auto line_width = 1;
     ImGuiHelper::InputInt(ICON_FK_BARCODE, "Line Width", line_width);
-    ImGui::Separator();
+    ImGuiHelper::ListSeparator();
   }
 
   {
