@@ -16,12 +16,10 @@
 
 namespace RenderOptionsPanel {
 void show() {
-  ImGuiWindowFlags option_flags =
-      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize;
+  ImGuiWindowFlags option_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize;
   const auto parent_size = ImGui::GetMainViewport()->WorkSize;
   const auto parent_pos = ImGui::GetMainViewport()->WorkPos;
-  ImGui::SetNextWindowSize(
-      {layout::kRenderOptionsPanelWidth, parent_size.y - layout::kMargin * 2});
+  ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
   ImGui::SetNextWindowPos({parent_pos.x + parent_size.x -
                                layout::kRenderOptionsPanelWidth -
                                layout::kMargin,
@@ -47,8 +45,6 @@ void show() {
 
   // detail options
   {
-    ImGui::BeginChild("detailoptions", {0, 0}, false, option_flags);
-
     ImGui::Dummy({0, 10});
     using func = std::function<void()>;
     static std::array<func, 4> options{
@@ -69,13 +65,11 @@ void show() {
 
       auto static show_demo = false;
       ImGuiHelper::SwitchButton(ICON_FK_ROCKET, "Demo", show_demo);
-      ImGui::Separator();
+      // ImGui::Separator();
       if (show_demo) {
         ImGui::ShowDemoWindow();
       }
     }
-
-    ImGui::EndChild();
   }
 
   ImGui::End();
