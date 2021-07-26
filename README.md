@@ -6,6 +6,7 @@
 ## Screenshots
 
 ![screenshot](docs/bunny)
+![screenshot](docs/Screenshot%202021-07-26%20153558.png)
 
 ## Build on Linux
 
