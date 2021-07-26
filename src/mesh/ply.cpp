@@ -16,6 +16,22 @@ namespace glr::mesh {
 PLY::PLY(std::string path) : Mesh(std::move(path)) {
   happly::PLYData file(file_path_);
   vertices_ = file.getVertexPositions();
+  for (const auto& v : vertices_) {
+    bound_.x.min = std::min(bound_.x.min, v[0]);
+    bound_.x.max = std::max(bound_.x.max, v[0]);
+
+    bound_.y.min = std::min(bound_.y.min, v[1]);
+    bound_.y.max = std::max(bound_.y.max, v[1]);
+
+    bound_.z.min = std::min(bound_.z.min, v[2]);
+    bound_.z.max = std::max(bound_.z.max, v[2]);
+  }
+
+  LOGI("x [{}, {}]", bound_.x.min, bound_.x.max);
+  LOGI("y [{}, {}]", bound_.y.min, bound_.y.max);
+  LOGI("z [{}, {}]", bound_.z.min, bound_.z.max);
+  LOGI("origin is [{}, {}, {}]", bound_.x.middle(), bound_.y.middle(), bound_.z.middle());
+
   for (const auto f : file.getFaceIndices<GLuint>()) {
     for (const auto& i : f) {
       faces_indices_.push_back(i);
@@ -49,4 +65,5 @@ void PLY::Render() {
   glBindVertexArray(vao_);
   glDrawElements(GL_TRIANGLES, faces_indices_.size(), GL_UNSIGNED_INT, nullptr);
 }
+
 }  // namespace glr::mesh
