@@ -144,8 +144,7 @@ inline void Comb(std::string &&icon, std::string &&label,
   ImGui::SameLine();
   ImGui::SetCursorPosX(p_w - 150.0F - ImGui::GetStyle().FramePadding.x);
   ImGui::SetNextItemWidth(150.0F);
-  ImGui::Combo(label.c_str(), &index, items.data(),
-               static_cast<int>(items.size()));
+  ImGui::Combo((std::string("##") + label).c_str(), &index, items.data(), static_cast<int>(items.size()));
 }
 
 inline void InputInt(std::string &&icon, std::string &&label, int &value) {
