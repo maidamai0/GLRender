@@ -257,6 +257,7 @@ void MainWindow::on_open_file() {
     // FIXME (tonghao): 2021-07-26
     // use shared ptr
     renderer_->AddMesh(new glr::mesh::PLY(outPath));
+    glfwSetWindowTitle(window_, outPath);
     LOGI(outPath);
     NFD_FreePath(outPath);
   } else if (result == NFD_CANCEL) {
