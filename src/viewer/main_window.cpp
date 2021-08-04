@@ -182,6 +182,7 @@ MainWindow::MainWindow() {
   // parameter is the data parameter of the callback, it can be useful for
   // different contexts but isn't necessary for our simple use case.
   glDebugMessageCallback(GLDebugMessageCallback, nullptr);
+  glEnable(GL_DEPTH_TEST);
 
   //  set window icon
   {
@@ -213,7 +214,7 @@ void MainWindow::Show() {
   // renderer_->AddMesh(&triangle);
 
   while (glfwWindowShouldClose(window_) == 0) {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
 
     int display_w = 0;
