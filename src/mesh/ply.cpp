@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <array>
 #include <iostream>
+#include <memory>
 #include <vector>
 
 #include "common/log.h"
@@ -11,11 +12,28 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "happly/happly.h"
 #include "spdlog/fmt/bundled/format.h"
+#include "spdlog/stopwatch.h"
 
 namespace glr::mesh {
 PLY::PLY(std::string path) : Mesh(std::move(path)) {
-  happly::PLYData file(file_path_);
-  vertices_ = file.getVertexPositions();
+  std::thread(&PLY::load_from_file, this, std::move(path)).detach();
+}
+
+void PLY::Render() {
+  if (should_create_buffer_) {
+    create_vertex_buffer();
+  }
+  glBindVertexArray(vao_);
+  glDrawElements(GL_TRIANGLES, faces_indices_.size(), GL_UNSIGNED_INT, nullptr);
+}
+
+void PLY::load_from_file(std::string&& path) {
+  file_ = std::make_unique<happly::PLYData>(file_path_);
+  should_create_buffer_ = true;
+}
+
+void PLY::create_vertex_buffer() {
+  vertices_ = file_->getVertexPositions();
   for (const auto& v : vertices_) {
     bound_.x.min = std::min(bound_.x.min, v[0]);
     bound_.x.max = std::max(bound_.x.max, v[0]);
@@ -32,7 +50,7 @@ PLY::PLY(std::string path) : Mesh(std::move(path)) {
   LOGI("z [{}, {}]", bound_.z.min, bound_.z.max);
   LOGI("origin is [{}, {}, {}]", bound_.x.middle(), bound_.y.middle(), bound_.z.middle());
 
-  for (const auto f : file.getFaceIndices<GLuint>()) {
+  for (const auto f : file_->getFaceIndices<GLuint>()) {
     for (const auto& i : f) {
       faces_indices_.push_back(i);
     }
@@ -59,11 +77,7 @@ PLY::PLY(std::string path) : Mesh(std::move(path)) {
   glGenBuffers(1, &ebo);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * faces_indices_.size(), faces_indices_.data(), GL_STATIC_DRAW);
-}
-
-void PLY::Render() {
-  glBindVertexArray(vao_);
-  glDrawElements(GL_TRIANGLES, faces_indices_.size(), GL_UNSIGNED_INT, nullptr);
+  should_create_buffer_ = false;
 }
 
 }  // namespace glr::mesh

@@ -9,6 +9,8 @@
  *
  */
 #include <array>
+#include <atomic>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,7 +18,12 @@
 #include "mesh/mesh.h"
 #include "render/camera.h"
 
+namespace happly {
+class PLYData;
+}
+
 namespace glr::mesh {
+
 class PLY : public Mesh {
  public:
   explicit PLY(std::string);
@@ -28,6 +35,9 @@ class PLY : public Mesh {
   void Render() override;
 
  private:
+  void load_from_file(std::string&& path);
+  void create_vertex_buffer();
+
   std::vector<std::array<double, 3>> vertices_;
   std::vector<unsigned int> faces_indices_;
   // std::vector<std::array<double, 3>> normals_;
@@ -35,5 +45,8 @@ class PLY : public Mesh {
   // std::vector<std::array<double, 3>> colors_;
 
   GLuint vao_ = 0;
+
+  std::atomic_bool should_create_buffer_{false};
+  std::unique_ptr<happly::PLYData> file_;
 };
 }  // namespace glr::mesh

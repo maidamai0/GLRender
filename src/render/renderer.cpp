@@ -80,7 +80,6 @@ void Renderder::Update() {
   glUniform3fv(color_location_, 1, glm::value_ptr(color_));
 
   for (auto* mesh : meshes_) {
-    model = glm::translate(model, -mesh->Origin());
     glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
     mesh->Render();
   }
