@@ -1,5 +1,6 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include "common/singleton.h"
 #include "render/renderer.h"
@@ -16,6 +17,8 @@ class MainWindow {
 
  private:
   void on_open_file();
+  void spinner();
+  void show_spinner(const bool show);
 
   GLFWwindow* window_ = nullptr;
   std::unique_ptr<glr::render::Renderder> renderer_;

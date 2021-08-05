@@ -3,6 +3,7 @@
 #include "common/log.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
+#include "common/use_busy_dialog.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
 #include "render/renderer.h"
@@ -15,15 +16,73 @@
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 #include "nfd.hpp"
 #include "stb/stb_image.h"
 
 #include <array>
+#include <cmath>
 #include <string>
 
 namespace {
 constexpr auto kGLSLVersion = "#version 410";
 }  // namespace
+
+void MainWindow::spinner() {
+  int window_width = 0;
+  int window_height = 0;
+  const auto flags =
+      ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoScrollbar;
+  glfwGetWindowSize(window_, &window_width, &window_height);
+  ImGui::SetNextWindowSize(ImVec2(static_cast<float>(window_width), static_cast<float>(window_height)));
+  ImGui::SetNextWindowPos(ImVec2(0, 0));
+  ImGui::SetNextWindowBgAlpha(0.5F);
+
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, {0, 0});
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+  ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+  ImGui::PushStyleColor(ImGuiCol_WindowBg, ImGui::GetColorU32(ImGuiCol_TitleBgActive));
+
+  ImGui::Begin("##SinnerWindow", nullptr, flags);
+  ImGuiWindow* window = ImGui::GetCurrentWindow();
+  if (window->SkipItems) {
+    return;
+  }
+
+  ImGuiContext& g = *GImGui;
+  const ImGuiStyle& style = g.Style;
+  const ImGuiID id = window->GetID("##spinner");
+
+  ImVec2 size{60, 60};
+  ImVec2 pos = {(ImGui::GetWindowWidth() - size.x) / 2, (ImGui::GetWindowHeight() - size.y) / 2};
+  const auto radius = size.x / 2;
+
+  const ImRect bb(pos, ImVec2(pos.x + size.x, pos.y + size.y));
+  ImGui::ItemSize(bb, style.FramePadding.y);
+  if (!ImGui::ItemAdd(bb, id)) {
+    return;
+  }
+
+  window->DrawList->PathClear();
+
+  int num_segments = 300;
+  int start = abs(ImSin(g.Time * 1.8F) * (num_segments - 5));
+  const float a_min = IM_PI * 2.0F * (static_cast<float>(start) / static_cast<float>(num_segments));
+  const float a_max = IM_PI * 2.0F * (static_cast<float>(num_segments - 200) / static_cast<float>(num_segments));
+
+  const ImVec2 center = ImVec2(pos.x + radius, pos.y + radius);
+
+  for (int i = 0; i < num_segments; ++i) {
+    const float a = a_min + (a_max - a_min) * (static_cast<float>(i) / static_cast<float>(num_segments));
+    window->DrawList->PathLineTo(
+        ImVec2(center.x + ImCos(a + g.Time * 8) * radius, center.y + ImSin(a + g.Time * 8) * radius));
+  }
+
+  ImGui::PopStyleColor();
+  window->DrawList->PathStroke(ImGui::GetColorU32(ImGuiCol_ButtonActive), 0, 3.0F);
+  ImGui::PopStyleVar(3);
+  ImGui::End();
+}
 
 void glfw_error_callback(int err, const char* msg) {
   LOGE("glfw error:{}[{}]", msg, err);
@@ -234,6 +293,9 @@ void MainWindow::Show() {
 
     RenderOptionsPanel::show();
     renderer_->Update();
+    if (common::use_busy_dialog::use()) {
+      spinner();
+    }
 
     ImGui::Render();
     glViewport(0, 0, display_w, display_h);

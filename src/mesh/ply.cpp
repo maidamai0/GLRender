@@ -6,6 +6,9 @@
 #include <vector>
 
 #include "common/log.h"
+#include "common/singleton.h"
+#include "common/swtich.h"
+#include "common/use_busy_dialog.h"
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -28,6 +31,7 @@ void PLY::Render() {
 }
 
 void PLY::load_from_file(std::string&& path) {
+  common::use_busy_dialog busy;
   file_ = std::make_unique<happly::PLYData>(file_path_);
   should_create_buffer_ = true;
 }
