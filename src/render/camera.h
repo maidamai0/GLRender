@@ -7,6 +7,7 @@
  * @date 2021-07-24
  */
 
+#include <algorithm>
 #include <cassert>
 
 #include "common/log.h"
@@ -37,6 +38,7 @@ class Camera {
 
   auto ProcessMouseScroll(float yoffset) {
     zoom_ -= yoffset;
+    zoom_ = std::clamp(zoom_, 10.0F, 180.0F);
   }
 
   auto SetAspect(const float aspect) {
