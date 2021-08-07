@@ -28,7 +28,7 @@ class Renderder {
   GLint view_location_ = 0;
   GLint model_location_ = 0;
   GLint color_location_ = 0;
-  Camera camera_{{0.0F, 0.0F, .5F}};
+  Camera camera_;
 
   glm::vec3 color_{0.8F, 0.4F, 0.2F};
 };

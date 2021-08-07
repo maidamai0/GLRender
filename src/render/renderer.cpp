@@ -77,10 +77,10 @@ void Renderder::Update() {
 
   glUniformMatrix4fv(projection_location_, 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix4fv(view_location_, 1, GL_FALSE, glm::value_ptr(view));
+  glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
   glUniform3fv(color_location_, 1, glm::value_ptr(color_));
 
   for (auto* mesh : meshes_) {
-    glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
     mesh->Render();
   }
 }
