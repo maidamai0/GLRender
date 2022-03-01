@@ -4,6 +4,7 @@
 #include "common/singleton.h"
 #include "common/swtich.h"
 #include "common/use_busy_dialog.h"
+#include "mesh/cube.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
 #include "render/renderer.h"
@@ -253,7 +254,7 @@ MainWindow::MainWindow() {
   }
 
   glfwSwapInterval(2);
-  glClearColor(COLOR(color::floralwhite), 1.0F);
+  glClearColor(COLOR(color::white), 1.0F);
 
   // imgui initialize
   IMGUI_CHECKVERSION();
@@ -268,9 +269,11 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::Show() {
-  auto show_demo_window = true;
-  // glr::mesh::Triangle triangle(window_);
-  // renderer_->AddMesh(&triangle);
+  glr::mesh::Triangle triangle(window_);
+  renderer_->AddMesh(&triangle);
+
+  glr::mesh::Cube cube(window_);
+  renderer_->AddMesh(&cube);
 
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
