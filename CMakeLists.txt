@@ -22,6 +22,7 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_program(GIT_CHGLOG git-chglog)
+
 if(GIT_CHGLOG)
   message(STATUS "Found git-chglog:${GIT_CHGLOG}")
   execute_process(
@@ -32,8 +33,6 @@ if(GIT_CHGLOG)
 else()
   message(STATUS "git-chglog not found, changelog will not be updated")
 endif()
-
-enable_testing()
 
 # definitions
 add_compile_definitions(APP_NAME="${CMAKE_PROJECT_NAME}")
@@ -54,4 +53,3 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/signal_slot)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/nativefiledialog_extended/src/include)
 
 add_subdirectory(src)
-add_subdirectory(test)
