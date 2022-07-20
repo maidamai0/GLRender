@@ -26,9 +26,8 @@ void show() {
   // file panel
   {
     ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
-    ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
-                             parent_pos.y + layout::kMargin});
-    ImGui::SetNextWindowBgAlpha(0.5f);
+    ImGui::SetNextWindowPos({parent_pos.x + layout::kMargin, parent_pos.y + layout::kMargin});
+    ImGui::SetNextWindowBgAlpha(0.5F);
     ImGui::Begin("FilePanel", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
 
     ImGuiHelper::AlignedText(std::string(ICON_FK_FILE) + " ", ImGuiHelper::Alignment::kVerticalCenter);
@@ -45,8 +44,7 @@ void show() {
   static float options_panel_bottom = 0;
   {
     ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
-    ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
-                             file_panel_bottom + layout::kPanelSpacing});
+    ImGui::SetNextWindowPos({parent_pos.x + layout::kMargin, file_panel_bottom + layout::kPanelSpacing});
     ImGui::SetNextWindowBgAlpha(0.5F);
     ImGui::Begin("RenderOptionsWindow", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
     // tabs
@@ -60,7 +58,7 @@ void show() {
       using func = std::function<void()>;
       static std::array<func, 4> options{SurfaceRenderOptions::show, LineRenderOptions::show, PointsRenderOptions::show,
                                          GlobRenderOptions::show};
-      options[selected_index]();
+      options.at(selected_index)();
     }
     options_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
     ImGui::End();
@@ -70,9 +68,8 @@ void show() {
   static auto debug_panel_bottom = 0.0F;
   {
     ImGui::SetNextWindowSize({layout::kRenderOptionsPanelWidth, 0});
-    ImGui::SetNextWindowPos({parent_pos.x + parent_size.x - layout::kRenderOptionsPanelWidth - layout::kMargin,
-                             options_panel_bottom + layout::kPanelSpacing});
-    ImGui::SetNextWindowBgAlpha(0.5f);
+    ImGui::SetNextWindowPos({parent_pos.x + layout::kMargin, options_panel_bottom + layout::kPanelSpacing});
+    ImGui::SetNextWindowBgAlpha(0.5F);
     ImGui::Begin("DebugPanel", nullptr, option_flags | ImGuiWindowFlags_NoScrollbar);
 
     auto static show_metrics = false;

@@ -6,8 +6,7 @@
 #include "spdlog/sinks/stdout_sinks.h"
 
 Log::Log() {
-  auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(
-      fmt::format("logs/{}_log.txt", APP_NAME), true);
+  auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(fmt::format("logs/{}.log", APP_NAME), true);
   auto std_cout_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
 
   spdlog::set_default_logger(std::make_shared<spdlog::logger>(

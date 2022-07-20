@@ -272,8 +272,8 @@ void MainWindow::Show() {
   glr::mesh::Triangle triangle(window_);
   renderer_->AddMesh(&triangle);
 
-  glr::mesh::Cube cube(window_);
-  renderer_->AddMesh(&cube);
+  // glr::mesh::Cube cube(window_);
+  // renderer_->AddMesh(&cube);
 
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

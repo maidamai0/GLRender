@@ -46,14 +46,14 @@ inline void reload_font(const float pixel_ratio, const float dpi_scaling) {
 inline void init_style(const float pixel_ratio, const float dpi_scaling) {
   ImGui::StyleColorsLight();
   ImGuiStyle &style = ImGui::GetStyle();
-  style.FrameRounding = 5.0f;
-  style.ChildRounding = 5.0f;
-  style.GrabRounding = 5.0f;
-  style.PopupRounding = 5.0f;
-  style.ScrollbarRounding = 5.0f;
-  style.TabRounding = 5.0f;
-  style.WindowRounding = 5.0f;
-  style.WindowTitleAlign = ImVec2(0.5f, 0.5f);
+  style.FrameRounding = 5.0F;
+  style.ChildRounding = 5.0F;
+  style.GrabRounding = 5.0F;
+  style.PopupRounding = 5.0F;
+  style.ScrollbarRounding = 5.0F;
+  style.TabRounding = 5.0F;
+  style.WindowRounding = 5.0F;
+  style.WindowTitleAlign = ImVec2(0.5F, 0.5F);
 
   // load font
   reload_font(pixel_ratio, dpi_scaling);
