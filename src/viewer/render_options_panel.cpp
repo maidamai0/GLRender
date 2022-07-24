@@ -7,6 +7,8 @@
 #include "common/singleton.h"
 #include "common/swtich.h"
 #include "fork_awesome.h"
+#include "glm/fwd.hpp"
+#include "glm/vec4.hpp"
 #include "global_render_options.h"
 #include "imgui/imgui.h"
 #include "imgui_helper.hpp"
@@ -37,6 +39,23 @@ void show() {
       make_singleton<common::Switch>().OpenFileClicked.fire();
     }
     file_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
+
+    {
+      const auto width = ImGui::GetContentRegionAvailWidth();
+      ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    MeshColor",
+                               ImGuiHelper::Alignment::kVerticalCenter);
+      ImGui::SameLine();
+      ImGui::SetCursorPosX(width - layout::kColorWidgetWidth);
+      ImGui::PushItemWidth(layout::kColorWidgetWidth);
+      static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
+      if (ImGui::ColorEdit4("MeshColor##default", (float *)&mesh_color, ImGuiColorEditFlags_NoLabel)) {
+        make_singleton<common::Switch>().ColorChanged.fire(
+            glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w));
+      }
+      ImGuiHelper::ListSeparator();
+      ImGui::PopItemWidth();
+    }
+
     ImGui::End();
   }
 

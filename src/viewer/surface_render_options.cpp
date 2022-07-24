@@ -1,9 +1,10 @@
-#include "fork_awesome.h"
-#include "imgui.h"
-#include "imgui_helper.hpp"
 #include <array>
 #include <string>
 #include <vector>
+#include "fork_awesome.h"
+#include "imgui.h"
+#include "imgui_helper.hpp"
+#include "viewer/layout.h"
 
 namespace SurfaceRenderOptions {
 void show() {
@@ -50,8 +51,8 @@ void show() {
       ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    Front",
                                ImGuiHelper::Alignment::kVerticalCenter);
       ImGui::SameLine();
-      ImGui::SetCursorPosX(width - 200.0f);
-      ImGui::PushItemWidth(200.0f);
+      ImGui::SetCursorPosX(width - layout::kColorWidgetWidth);
+      ImGui::PushItemWidth(layout::kColorWidgetWidth);
       static ImColor font_color{
           ImGui::GetStyle().Colors[ImGuiCol_PlotHistogram]};
       ImGui::ColorEdit4("FrontColor##default", (float *)&font_color,
@@ -65,8 +66,8 @@ void show() {
       ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    Back",
                                ImGuiHelper::Alignment::kVerticalCenter);
       ImGui::SameLine();
-      ImGui::SetCursorPosX(width - 200.0f);
-      ImGui::PushItemWidth(200.0f);
+      ImGui::SetCursorPosX(width - layout::kColorWidgetWidth);
+      ImGui::PushItemWidth(layout::kColorWidgetWidth);
       static ImColor back_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
       ImGui::ColorEdit4("BackColor##default", (float *)&back_color,
                         ImGuiColorEditFlags_NoLabel);

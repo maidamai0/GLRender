@@ -19,7 +19,7 @@ class Renderder {
   void on_zoom_chaned(const float zoom);
   void on_aspect_changed(const float aspect);
   void on_yaw_pich_changed(const int yaw, const int pitch);
-  void on_color_changed(const glm::vec3& color);
+  void on_color_changed(const glm::vec4& color);
 
   std::vector<glr::mesh::Mesh*> meshes_;
 
@@ -30,7 +30,7 @@ class Renderder {
   GLint color_location_ = 0;
   Camera camera_;
 
-  glm::vec3 color_{0.8F, 0.4F, 0.2F};
+  glm::vec4 color_{0.8F, 0.4F, 0.2F, 1.0};
 };
 
 }  // namespace glr::render

@@ -269,7 +269,7 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::Show() {
-  glr::mesh::Triangle triangle(window_);
+  glr::mesh::Triangle triangle;
   renderer_->AddMesh(&triangle);
 
   // glr::mesh::Cube cube(window_);

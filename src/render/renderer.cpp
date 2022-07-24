@@ -28,10 +28,10 @@ void main() {
 static constexpr auto fragment_shader_text = R"(
 #version 410
 
-uniform vec3 color;
+uniform vec4 color;
 
 void main() {
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = color;
 };
 )";
 
@@ -63,6 +63,7 @@ Renderder::Renderder() {
   make_singleton<common::Switch>().ZoomChanged.connect<&Renderder::on_zoom_chaned>(this);
   make_singleton<common::Switch>().AspectChanged.connect<&Renderder::on_aspect_changed>(this);
   make_singleton<common::Switch>().YawPitchChanged.connect<&Renderder::on_yaw_pich_changed>(this);
+  make_singleton<common::Switch>().ColorChanged.connect<&Renderder::on_color_changed>(this);
 }
 
 void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
@@ -79,7 +80,7 @@ void Renderder::Update() {
   glUniformMatrix4fv(projection_location_, 1, GL_FALSE, glm::value_ptr(projection));
   glUniformMatrix4fv(view_location_, 1, GL_FALSE, glm::value_ptr(view));
   glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
-  glUniform3fv(color_location_, 1, glm::value_ptr(color_));
+  glUniform4fv(color_location_, 1, glm::value_ptr(color_));
 
   for (auto* mesh : meshes_) {
     mesh->Render();
@@ -98,7 +99,7 @@ void Renderder::on_yaw_pich_changed(const int yaw, const int pitch) {
   camera_.ProcessMouseMovement(static_cast<float>(-yaw), static_cast<float>(pitch), true);
 }
 
-void Renderder::on_color_changed(const glm::vec3& color) {
+void Renderder::on_color_changed(const glm::vec4& color) {
   color_ = color;
 }
 }  // namespace glr::render
