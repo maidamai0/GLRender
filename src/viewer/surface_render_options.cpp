@@ -47,7 +47,7 @@ void show() {
     ImGuiHelper::ListSeparator();
 
     if (index == 1) {
-      const auto width = ImGui::GetContentRegionAvailWidth();
+      const auto width = ImGui::GetContentRegionAvail().x;
       ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    Front",
                                ImGuiHelper::Alignment::kVerticalCenter);
       ImGui::SameLine();
@@ -62,7 +62,7 @@ void show() {
     }
 
     {
-      const auto width = ImGui::GetContentRegionAvailWidth();
+      const auto width = ImGui::GetContentRegionAvail().x;
       ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    Back",
                                ImGuiHelper::Alignment::kVerticalCenter);
       ImGui::SameLine();

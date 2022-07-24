@@ -67,7 +67,7 @@ inline auto ButtonTab(std::vector<std::string> &tabs, int &index) -> int {
   std::string tab_names;
   std::for_each(tabs.begin(), tabs.end(),
                 [&tab_names](const auto item) { tab_names += item; });
-  const auto tab_width = ImGui::GetContentRegionAvailWidth();
+  const auto tab_width = ImGui::GetContentRegionAvail().x;
   const auto tab_btn_width = tab_width / static_cast<float>(tabs.size());
   const auto h = ImGui::CalcTextSize(tab_names.c_str()).y;
   ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, {0, 0});
@@ -113,7 +113,7 @@ inline void SwitchButton(std::string &&icon, std::string &&label,
   float height = ImGui::GetFrameHeight();
   float width = height * 1.55F;
   float radius = height * 0.50F;
-  const auto frame_width = ImGui::GetContentRegionAvailWidth();
+  const auto frame_width = ImGui::GetContentRegionAvail().x;
 
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
   ImGui::SameLine();
@@ -140,7 +140,7 @@ inline void SwitchButton(std::string &&icon, std::string &&label,
 
 inline void Comb(std::string &&icon, std::string &&label,
                  const std::vector<const char *> &items, int &index) {
-  const auto p_w = ImGui::GetContentRegionAvailWidth();
+  const auto p_w = ImGui::GetContentRegionAvail().x;
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
   ImGui::SameLine();
   ImGui::SetCursorPosX(p_w - 150.0F - ImGui::GetStyle().FramePadding.x);
@@ -149,7 +149,7 @@ inline void Comb(std::string &&icon, std::string &&label,
 }
 
 inline void InputInt(std::string &&icon, std::string &&label, int &value) {
-  const auto p_w = ImGui::GetContentRegionAvailWidth();
+  const auto p_w = ImGui::GetContentRegionAvail().x;
   AlignedText(icon + "    " + label, Alignment::kVerticalCenter);
   ImGui::SameLine();
   ImGui::SetCursorPosX(p_w - 100.0F - ImGui::GetStyle().FramePadding.x);

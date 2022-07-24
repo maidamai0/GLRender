@@ -66,7 +66,7 @@ void show() {
     file_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
 
     {
-      const auto width = ImGui::GetContentRegionAvailWidth();
+      const auto width = ImGui::GetContentRegionAvail().x;
       ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    MeshColor",
                                ImGuiHelper::Alignment::kVerticalCenter);
       ImGui::SameLine();
