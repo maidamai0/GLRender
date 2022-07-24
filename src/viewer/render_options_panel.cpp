@@ -20,6 +20,31 @@
 
 namespace RenderOptionsPanel {
 void show() {
+  ImGui::SetNextWindowBgAlpha(0.5F);
+  ImGui::Begin("Render Parameters", nullptr,
+               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+  static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
+  if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
+    make_singleton<common::Switch>().ColorChanged.fire(
+        glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w));
+  }
+
+  auto static show_metrics = false;
+  ImGuiHelper::SwitchButton(ICON_FK_WRENCH, "Window Metrics", show_metrics);
+  ImGuiHelper::ListSeparator();
+  if (show_metrics) {
+    ImGui::ShowMetricsWindow();
+  }
+
+  auto static show_demo = false;
+  ImGuiHelper::SwitchButton(ICON_FK_ROCKET, "Demo", show_demo);
+  if (show_demo) {
+    ImGui::ShowDemoWindow();
+  }
+
+  ImGui::End();
+
+  return;
   ImGuiWindowFlags option_flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize;
   const auto parent_size = ImGui::GetMainViewport()->WorkSize;
   const auto parent_pos = ImGui::GetMainViewport()->WorkPos;
