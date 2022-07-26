@@ -90,7 +90,13 @@ void glfw_error_callback(int err, const char* msg) {
 }
 
 void glfw_resize_callback(GLFWwindow* wind, int width, int height) {
+  // window is minimized
+  if (width <= 0 || height <= 0) {
+    return;
+  }
+
   glfwSwapBuffers(wind);
+  make_singleton<common::Switch>().AspectChanged.fire((static_cast<float>(width) / static_cast<float>(height)));
 }
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
@@ -98,6 +104,26 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     LOGI("user request to exit");
     glfwSetWindowShouldClose(window, GLFW_TRUE);
+  }
+}
+
+void glfw_mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
+  // make_singleton<common::Switch>().YawPitchChanged.fire(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+}
+
+void glfw_mouse_callback(GLFWwindow* window, int button, int action, int mods) {
+  ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
+  if (!ImGui::GetIO().WantCaptureMouse) {
+    // TODO (tonghao): 2022-07-26
+    // implement this
+    LOGW("mouse callback not implemented");
+  }
+}
+
+void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+  ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
+  if (!ImGui::GetIO().WantCaptureMouse) {
+    make_singleton<common::Switch>().ZoomChanged.fire(yoffset);
   }
 }
 
@@ -217,6 +243,9 @@ MainWindow::MainWindow() {
 
   glfwSetKeyCallback(window_, glfw_key_callback);
   glfwSetWindowSizeCallback(window_, glfw_resize_callback);
+  glfwSetMouseButtonCallback(window_, glfw_mouse_callback);
+  glfwSetCursorPosCallback(window_, glfw_mouse_move_callback);
+  glfwSetScrollCallback(window_, glfw_scroll_callback);
   glfwMakeContextCurrent(window_);
   if (gladLoadGL() == 0) {
     LOGE("glad load opengl failed");
@@ -259,7 +288,7 @@ MainWindow::MainWindow() {
   // imgui initialize
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
-  ImGui_ImplGlfw_InitForOpenGL(window_, true);
+  ImGui_ImplGlfw_InitForOpenGL(window_, false);
   ImGui_ImplOpenGL3_Init(kGLSLVersion);
 
   renderer_ = std::make_unique<glr::render::Renderder>();
@@ -286,13 +315,6 @@ void MainWindow::Show() {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-
-    make_singleton<common::Switch>().ZoomChanged.fire(ImGui::GetIO().MouseWheel);
-    make_singleton<common::Switch>().AspectChanged.fire(
-        (static_cast<float>(display_w) / static_cast<float>(display_h)));
-    if (ImGui::IsMouseDown(0)) {
-      make_singleton<common::Switch>().YawPitchChanged.fire(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
-    }
 
     RenderOptionsPanel::show();
     renderer_->Update();

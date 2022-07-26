@@ -20,9 +20,11 @@
 
 namespace RenderOptionsPanel {
 void show() {
+  ImGui::SetNextWindowPos({10, 10});
   ImGui::SetNextWindowBgAlpha(0.5F);
   ImGui::Begin("Render Parameters", nullptr,
-               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
+               ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar |
+                   ImGuiWindowFlags_NoMove);
   static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
   if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
     make_singleton<common::Switch>().ColorChanged.fire(
