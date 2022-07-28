@@ -16,11 +16,6 @@ class Renderder {
   void Update();
 
  private:
-  void on_zoom_chaned(const float zoom);
-  void on_aspect_changed(const float aspect);
-  void on_yaw_pich_changed(const int yaw, const int pitch);
-  void on_color_changed(const glm::vec4& color);
-
   std::vector<glr::mesh::Mesh*> meshes_;
 
   GLuint program_ = 0;

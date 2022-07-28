@@ -2,7 +2,8 @@
 
 #include "common/singleton.h"
 #include "glm/fwd.hpp"
-#include "signal_slot/nano_signal_slot.hpp"
+#include "io/input.hpp"
+#include "sigslot/signal.hpp"
 
 namespace common {
 class Switch {
@@ -11,10 +12,12 @@ class Switch {
  public:
   Switch() = default;
   ~Switch() = default;
-  Nano::Signal<void(const float zoom)> ZoomChanged;
-  Nano::Signal<void(const float zoom)> AspectChanged;
-  Nano::Signal<void(const glm::vec4& color)> ColorChanged;
-  Nano::Signal<void(const int mouse_x, const int mouse_y)> YawPitchChanged;
-  Nano::Signal<void()> OpenFileClicked;
+
+  sigslot::signal<float> Zoom;
+  sigslot::signal<float> Aspect;
+  sigslot::signal_st<const glm::vec4&> MeshColor;
+  sigslot::signal<double, double> MousePosition;
+  sigslot::signal<io::MouseButton, io::MouseAction> MouseButtonAction;
+  sigslot::signal<> OpenFile;
 };
 }  // namespace common

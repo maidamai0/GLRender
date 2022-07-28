@@ -60,10 +60,8 @@ Renderder::Renderder() {
   // set draw type
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-  make_singleton<common::Switch>().ZoomChanged.connect<&Renderder::on_zoom_chaned>(this);
-  make_singleton<common::Switch>().AspectChanged.connect<&Renderder::on_aspect_changed>(this);
-  make_singleton<common::Switch>().YawPitchChanged.connect<&Renderder::on_yaw_pich_changed>(this);
-  make_singleton<common::Switch>().ColorChanged.connect<&Renderder::on_color_changed>(this);
+  make_singleton<common::Switch>().MeshColor.connect(
+      [this](const glm::vec4& mesh_color) { this->color_ = mesh_color; });
 }
 
 void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
@@ -87,19 +85,4 @@ void Renderder::Update() {
   }
 }
 
-void Renderder::on_zoom_chaned(const float zoom) {
-  camera_.ProcessMouseScroll(zoom);
-}
-
-void Renderder::on_aspect_changed(const float aspect) {
-  camera_.SetAspect(aspect);
-}
-
-void Renderder::on_yaw_pich_changed(const int yaw, const int pitch) {
-  camera_.ProcessMouseMovement(static_cast<float>(-yaw), static_cast<float>(pitch), true);
-}
-
-void Renderder::on_color_changed(const glm::vec4& color) {
-  color_ = color;
-}
 }  // namespace glr::render

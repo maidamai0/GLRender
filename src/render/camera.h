@@ -11,17 +11,25 @@
 #include <cassert>
 
 #include "common/log.h"
+#include "common/singleton.h"
+#include "common/swtich.h"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/fwd.hpp"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/trigonometric.hpp"
-
-enum class CameraDirection { kForward, kBackward, kLeft, kRight };
+#include "io/input.hpp"
 
 class Camera {
  public:
-  Camera() = default;
+  Camera() {
+    make_singleton<common::Switch>().Zoom.connect([this](float zoom) { this->zoom_ = zoom; });
+    make_singleton<common::Switch>().Aspect.connect([this](float aspect) { this->aspect_ = aspect; });
+    make_singleton<common::Switch>().MouseButtonAction.connect(
+        [this](io::MouseButton button, io::MouseAction action) { LOGW("MouseButtonAction event not implemented!"); });
+    make_singleton<common::Switch>().MousePosition.connect(
+        [this](double xpos, double ypos) { LOGW("MousePosition event not implemented"); });
+  }
 
   [[nodiscard]] auto GetViewMatrix() const {
     return view_;

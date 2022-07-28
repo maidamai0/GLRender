@@ -27,7 +27,7 @@ void show() {
                    ImGuiWindowFlags_NoMove);
   static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
   if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
-    make_singleton<common::Switch>().ColorChanged.fire(
+    make_singleton<common::Switch>().MeshColor(
         glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w));
   }
 
@@ -63,25 +63,9 @@ void show() {
     ImGui::SameLine();
 
     if (ImGui::Button("Load mesh from file...")) {
-      make_singleton<common::Switch>().OpenFileClicked.fire();
+      make_singleton<common::Switch>().OpenFile();
     }
     file_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
-
-    {
-      const auto width = ImGui::GetContentRegionAvail().x;
-      ImGuiHelper::AlignedText(std::string(ICON_FK_EYEDROPPER) + "    MeshColor",
-                               ImGuiHelper::Alignment::kVerticalCenter);
-      ImGui::SameLine();
-      ImGui::SetCursorPosX(width - layout::kColorWidgetWidth);
-      ImGui::PushItemWidth(layout::kColorWidgetWidth);
-      static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
-      if (ImGui::ColorEdit4("MeshColor##default", (float *)&mesh_color, ImGuiColorEditFlags_NoLabel)) {
-        make_singleton<common::Switch>().ColorChanged.fire(
-            glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w));
-      }
-      ImGuiHelper::ListSeparator();
-      ImGui::PopItemWidth();
-    }
 
     ImGui::End();
   }

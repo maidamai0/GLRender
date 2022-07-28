@@ -20,11 +20,10 @@
 	path = deps/happly/happly
 	url = https://github.com/nmwsharp/happly.git
 	branch = master
-[submodule "deps/signal_slot/signal_slot"]
-	path = deps/signal_slot/signal_slot
-	url = https://github.com/NoAvailableAlias/nano-signal-slot.git
-	branch = master
 [submodule "deps/nativefiledialog_extended"]
 	path = deps/nativefiledialog_extended
 	url = https://github.com/btzy/nativefiledialog-extended.git
 	branch = master
+[submodule "deps/sigslot"]
+	path = deps/sigslot
+	url = https://github.com/palacaze/sigslot.git

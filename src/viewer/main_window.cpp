@@ -7,6 +7,7 @@
 #include "mesh/cube.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
+#include "render/camera.h"
 #include "render/renderer.h"
 #include "viewer/icon.png.h"
 #include "viewer/render_options_panel.h"
@@ -96,7 +97,7 @@ void glfw_resize_callback(GLFWwindow* wind, int width, int height) {
   }
 
   glfwSwapBuffers(wind);
-  make_singleton<common::Switch>().AspectChanged.fire((static_cast<float>(width) / static_cast<float>(height)));
+  make_singleton<common::Switch>().Aspect((static_cast<float>(width) / static_cast<float>(height)));
 }
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
@@ -108,23 +109,41 @@ void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
 }
 
 void glfw_mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
-  // make_singleton<common::Switch>().YawPitchChanged.fire(ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
+  ImGui_ImplGlfw_CursorPosCallback(window, xpos, ypos);
+  if (ImGui::GetIO().WantCaptureMouse) {
+    return;
+  }
+
+  make_singleton<common::Switch>().MousePosition(xpos, ypos);
 }
 
 void glfw_mouse_callback(GLFWwindow* window, int button, int action, int mods) {
   ImGui_ImplGlfw_MouseButtonCallback(window, button, action, mods);
-  if (!ImGui::GetIO().WantCaptureMouse) {
-    // TODO (tonghao): 2022-07-26
-    // implement this
-    LOGW("mouse callback not implemented");
+  if (ImGui::GetIO().WantCaptureMouse) {
+    return;
   }
+
+  io::MouseButton mouse_button = io::MouseButton::kLeft;
+  if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+    mouse_button = io::MouseButton::kRight;
+  } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
+    mouse_button = io::MouseButton::kMiddle;
+  }
+
+  io::MouseAction mouse_action = io::MouseAction::kPress;
+  if (action == GLFW_RELEASE) {
+    mouse_action = io::MouseAction::kRelease;
+  }
+
+  make_singleton<common::Switch>().MouseButtonAction(mouse_button, mouse_action);
 }
 
 void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
   ImGui_ImplGlfw_ScrollCallback(window, xoffset, yoffset);
-  if (!ImGui::GetIO().WantCaptureMouse) {
-    make_singleton<common::Switch>().ZoomChanged.fire(yoffset);
+  if (ImGui::GetIO().WantCaptureMouse) {
+    return;
   }
+  make_singleton<common::Switch>().Zoom(yoffset);
 }
 
 void GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
@@ -293,7 +312,7 @@ MainWindow::MainWindow() {
 
   renderer_ = std::make_unique<glr::render::Renderder>();
   NFD::Init();
-  make_singleton<common::Switch>().OpenFileClicked.connect<&MainWindow::on_open_file>(this);
+  make_singleton<common::Switch>().OpenFile.connect(&MainWindow::on_open_file, this);
   style::init_style(1.0F, 1.0F);
 }
 
