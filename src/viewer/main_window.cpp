@@ -317,8 +317,6 @@ MainWindow::MainWindow() {
   NFD::Init();
   Switch().OpenFile.connect(&MainWindow::on_open_file, this);
   style::init_style(1.0F, 1.0F);
-
-  glEnable(GL_DEPTH_TEST);
 }
 
 void MainWindow::Show() {

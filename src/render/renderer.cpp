@@ -63,22 +63,34 @@ void Renderder::Update() {
   glUseProgram(program_);
 
   const auto proj_view = camera_();
-  glUniform4fv(color_location_, 1, glm::value_ptr(AppState().mesh_color_));
 
   // set draw type
-  int draw_mode = GL_FILL;
-  if (AppState().draw_mode_ == app::DrawMode::Lines) {
-    draw_mode = GL_LINE;
-  } else if (AppState().draw_mode_ == app::DrawMode::Points) {
-    draw_mode = GL_POINT;
-  }
-  glPolygonMode(GL_FRONT_AND_BACK, draw_mode);
-
   for (auto* mesh : meshes_) {
     glm::mat4 model = glm::mat4(1.0F);
     model = glm::translate(model, -mesh->Origin());
     glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, glm::value_ptr(proj_view * model));
-    mesh->Render();
+
+    // draw face
+    if (AppState().draw_face) {
+      glUniform4fv(color_location_, 1, glm::value_ptr(AppState().mesh_color_));
+      glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+      mesh->Render();
+    }
+
+    // draw line
+    if (AppState().draw_line_) {
+      glUniform4fv(color_location_, 1, glm::value_ptr(AppState().line_color_));
+      glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+      mesh->Render();
+    }
+
+    // draw points
+    if (AppState().draw_points) {
+      glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+      glPointSize(3.0);
+      glUniform4fv(color_location_, 1, glm::value_ptr(AppState().point_color_));
+      mesh->Render();
+    }
   }
 }
 

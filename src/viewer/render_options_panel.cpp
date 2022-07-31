@@ -26,11 +26,6 @@ void show() {
   ImGui::Begin("Render Parameters", nullptr,
                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar |
                    ImGuiWindowFlags_NoMove);
-  static ImColor mesh_color{AppState().mesh_color_.x, AppState().mesh_color_.y, AppState().mesh_color_.z,
-                            AppState().mesh_color_.w};
-  if (ImGui::ColorEdit4("Mesh Color", (float *)&mesh_color)) {
-    AppState().mesh_color_ = glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
-  }
 
   if (ImGui::Button("Reset Camera")) {
     Switch().ResetCamera();
@@ -40,29 +35,45 @@ void show() {
     Switch().OpenFile();
   }
 
-  static int draw_mode = 2;
-  ImGui::Combo("Draw Mode", &draw_mode, "Points\0Lines\0Surface\0");
-  switch (draw_mode) {
-    case 0:
-      AppState().draw_mode_ = app::DrawMode::Points;
-      break;
-    case 1:
-      AppState().draw_mode_ = app::DrawMode::Lines;
-      break;
-    case 2:
-      AppState().draw_mode_ = app::DrawMode::Surface;
-      break;
+  ImGui::Checkbox("Draw Lines ", &AppState().draw_line_);
+  ImGui::SameLine();
+  static ImColor line_color{AppState().line_color_.x, AppState().line_color_.y, AppState().line_color_.z,
+                            AppState().line_color_.w};
+  if (ImGui::ColorEdit4("Line Color", (float *)&line_color,
+                        ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+    AppState().line_color_ = glm::vec4(line_color.Value.x, line_color.Value.y, line_color.Value.z, line_color.Value.w);
+  }
+
+  ImGui::Checkbox("Draw Points", &AppState().draw_points);
+  ImGui::SameLine();
+  static ImColor point_color{AppState().point_color_.x, AppState().point_color_.y, AppState().point_color_.z,
+                             AppState().point_color_.w};
+  if (ImGui::ColorEdit4("Point Color", (float *)&point_color,
+                        ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+    AppState().point_color_ =
+        glm::vec4(point_color.Value.x, point_color.Value.y, point_color.Value.z, point_color.Value.w);
+  }
+
+  {
+    ImGui::Checkbox("Draw Faces ", &AppState().draw_face);
+    ImGui::SameLine();
+    static ImColor mesh_color{AppState().mesh_color_.x, AppState().mesh_color_.y, AppState().mesh_color_.z,
+                              AppState().mesh_color_.w};
+    if (ImGui::ColorEdit4("Mesh Color", (float *)&mesh_color,
+                          ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+      AppState().mesh_color_ =
+          glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
+    }
   }
 
   auto static show_metrics = false;
-  ImGuiHelper::SwitchButton(ICON_FK_WRENCH, "Window Metrics", show_metrics);
-  ImGuiHelper::ListSeparator();
+  ImGui::Checkbox("Window Metrics", &show_metrics);
   if (show_metrics) {
     ImGui::ShowMetricsWindow();
   }
 
   auto static show_demo = false;
-  ImGuiHelper::SwitchButton(ICON_FK_ROCKET, "Demo", show_demo);
+  ImGui::Checkbox("Demo", &show_demo);
   if (show_demo) {
     ImGui::ShowDemoWindow();
   }

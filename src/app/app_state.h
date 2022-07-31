@@ -19,8 +19,6 @@
 #include "io/input.hpp"
 
 namespace app {
-
-enum class DrawMode { Points, Lines, Surface };
 class State {
  private:
   enable_singleton(State);
@@ -42,7 +40,11 @@ class State {
 
   // renderering
   glm::vec4 mesh_color_{0.8F, 0.4F, 0.2F, 1.0};
-  DrawMode draw_mode_;
+  glm::vec4 line_color_{0.8F, 0.4F, 0.2F, 1.0};
+  glm::vec4 point_color_{0.8F, 0.4F, 0.2F, 1.0};
+  bool draw_line_{false};
+  bool draw_points{false};
+  bool draw_face{true};
 };
 
 }  // namespace app
