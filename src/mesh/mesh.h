@@ -10,7 +10,7 @@ struct min_max {
   double min = 1.0;
   double max = -1.0;
   [[nodiscard]] auto middle() const -> double {
-    return static_cast<float>(min + max);
+    return static_cast<float>(min + max) / 2;
   }
 };
 
@@ -27,7 +27,7 @@ class Mesh {
   virtual ~Mesh() = default;
   virtual void Render() = 0;
   [[nodiscard]] auto Origin() const -> glm::vec3 {
-    return glm::vec3(bound_.x.middle(), bound_.y.middle(), bound_.z.middle());
+    return {bound_.x.middle(), bound_.y.middle(), bound_.z.middle()};
   }
 
   no_copy(Mesh);

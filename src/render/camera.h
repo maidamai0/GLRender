@@ -75,6 +75,8 @@ class Camera {
   }
 
   void on_pan(float xpos, float ypos) {
+    LOGI("pan is broken");
+    return;
     const auto xoffset = xpos - last_mouse_x_;
     const auto yoffset = ypos - last_mouse_y_;
 

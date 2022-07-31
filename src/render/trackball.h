@@ -24,7 +24,7 @@ class TrackBall {
     const auto pos = glm::vec3(xpos, ypos, get_z(xpos, ypos));
 
     const auto axis = glm::normalize(glm::cross(old_pos, pos));
-    const auto angle = glm::angle(old_pos, pos);
+    const auto angle = glm::angle(old_pos, pos) * 10;
 
     quaternion_ = glm::angleAxis(angle, axis) * quaternion_;
   }

@@ -26,13 +26,32 @@ void show() {
   ImGui::Begin("Render Parameters", nullptr,
                ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar |
                    ImGuiWindowFlags_NoMove);
-  static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
+  static ImColor mesh_color{AppState().mesh_color_.x, AppState().mesh_color_.y, AppState().mesh_color_.z,
+                            AppState().mesh_color_.w};
   if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
     AppState().mesh_color_ = glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
   }
 
   if (ImGui::Button("ResetCamera")) {
     Switch().ResetCamera();
+  }
+
+  if (ImGui::Button("Load mesh from file...")) {
+    Switch().OpenFile();
+  }
+
+  static int draw_mode = 0;
+  ImGui::Combo("DrawMode", &draw_mode, "Points\0Lines\0Surface\0");
+  switch (draw_mode) {
+    case 0:
+      AppState().draw_mode_ = app::DrawMode::Points;
+      break;
+    case 1:
+      AppState().draw_mode_ = app::DrawMode::Lines;
+      break;
+    case 2:
+      AppState().draw_mode_ = app::DrawMode::Surface;
+      break;
   }
 
   auto static show_metrics = false;

@@ -19,6 +19,8 @@
 #include "io/input.hpp"
 
 namespace app {
+
+enum class DrawMode { Points, Lines, Surface };
 class State {
  private:
   enable_singleton(State);
@@ -38,7 +40,9 @@ class State {
   float mouse_scroll_y_ = 0.0F;
   io::MouseMode mouse_mode_ = io::MouseMode::kNone;
 
+  // renderering
   glm::vec4 mesh_color_{0.8F, 0.4F, 0.2F, 1.0};
+  DrawMode draw_mode_;
 };
 
 }  // namespace app

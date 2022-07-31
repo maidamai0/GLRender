@@ -53,9 +53,6 @@ Renderder::Renderder() {
 
   mvp_location_ = glGetUniformLocation(program_, "mvp");
   color_location_ = glGetUniformLocation(program_, "color");
-
-  // set draw type
-  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
@@ -65,13 +62,22 @@ void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
 void Renderder::Update() {
   glUseProgram(program_);
 
-  glm::mat4 model = glm::mat4(1.0F);
   const auto proj_view = camera_();
-
-  glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, glm::value_ptr(proj_view * model));
   glUniform4fv(color_location_, 1, glm::value_ptr(AppState().mesh_color_));
 
+  // set draw type
+  int draw_mode = GL_FILL;
+  if (AppState().draw_mode_ == app::DrawMode::Lines) {
+    draw_mode = GL_LINE;
+  } else if (AppState().draw_mode_ == app::DrawMode::Points) {
+    draw_mode = GL_POINT;
+  }
+  glPolygonMode(GL_FRONT_AND_BACK, draw_mode);
+
   for (auto* mesh : meshes_) {
+    glm::mat4 model = glm::mat4(1.0F);
+    model = glm::translate(model, -mesh->Origin());
+    glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, glm::value_ptr(proj_view * model));
     mesh->Render();
   }
 }
