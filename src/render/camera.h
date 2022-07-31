@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <cassert>
 
+#include "app/app_state.h"
 #include "common/log.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
@@ -19,50 +20,77 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/trigonometric.hpp"
 #include "io/input.hpp"
+#include "render/trackball.h"
 
 class Camera {
  public:
   Camera() {
-    make_singleton<common::Switch>().Zoom.connect([this](float zoom) { this->zoom_ = zoom; });
-    make_singleton<common::Switch>().Aspect.connect([this](float aspect) { this->aspect_ = aspect; });
-    make_singleton<common::Switch>().MouseButtonAction.connect(
-        [this](io::MouseButton button, io::MouseAction action) { LOGW("MouseButtonAction event not implemented!"); });
-    make_singleton<common::Switch>().MousePosition.connect(
-        [this](double xpos, double ypos) { LOGW("MousePosition event not implemented"); });
+    Switch().MousePosition.connect([this](float xpos, float ypos) {
+      static bool first_time = true;
+      if (first_time) {
+        first_time = false;
+        return;
+      }
+
+      switch (AppState().mouse_mode_) {
+        case io::MouseMode::kRotate:
+          on_rotate(xpos, ypos);
+          break;
+        case io::MouseMode::kPan:
+          on_pan(xpos, ypos);
+          break;
+        default:
+          break;
+      }
+
+      last_mouse_x_ = static_cast<float>(xpos);
+      last_mouse_y_ = static_cast<float>(ypos);
+    });
+
+    Switch().ResetCamera.connect([this]() {
+      position_ = {0.0F, 0.0F, 1.0F};
+      AppState().mouse_scroll_y_ = 0.0F;
+      trackball_.Reset();
+    });
   }
 
-  [[nodiscard]] auto GetViewMatrix() const {
-    return view_;
-  }
+  [[nodiscard]] auto operator()() const {
+    auto view = glm::lookAt(position_, front_, up_);
+    view = view * trackball_.RotationMatrix();
 
-  [[nodiscard]] auto GetZoom() const {
-    return zoom_;
-  }
+    const auto zoom = std::clamp(45.0F - AppState().mouse_scroll_y_, 1.0F, 180.0F);
+    const auto aspect = static_cast<float>(AppState().window_width_) / static_cast<float>(AppState().window_height_);
+    const auto projection = glm::perspective(glm::radians(zoom), aspect, 0.1F, 100.0F);
 
-  auto ProcessMouseMovement(float offset_x, float offset_y, bool constrain_pitch) {
-    view_ = glm::rotate(view_, glm::radians(offset_x), glm::vec3(0.0F, 1.0F, 0.0F));
-    view_ = glm::rotate(view_, glm::radians(offset_y), glm::vec3(1.0F, 0.0F, 0.0F));
-  }
-
-  auto ProcessMouseScroll(float yoffset) {
-    zoom_ -= yoffset;
-    zoom_ = std::clamp(zoom_, 10.0F, 180.0F);
-  }
-
-  auto SetAspect(const float aspect) {
-    aspect_ = aspect;
-  }
-
-  [[nodiscard]] auto GetAspect() const {
-    return aspect_;
+    return projection * view;
   }
 
  private:
-  glm::mat4 view_ = glm::lookAt(glm::vec3(0.0, 0.0, 1.0),   // eye
-                                glm::vec3(0.0, 0.0, 0.0),   // direction
-                                glm::vec3(0.0, 1.0, 0.0));  // up
-  float zoom_{45.0F};
+  void on_rotate(float xpos, float ypos) {
+    const auto width = static_cast<float>(AppState().window_width_);
+    const auto height = static_cast<float>(AppState().window_height_);
 
-  // width/height
-  float aspect_ = 1.0F;
+    trackball_.OnMouseMove(last_mouse_x_ / width - 0.5F, -(last_mouse_y_ / height - 0.5F), xpos / width - 0.5F,
+                           -(ypos / height - 0.5F));
+  }
+
+  void on_pan(float xpos, float ypos) {
+    const auto xoffset = xpos - last_mouse_x_;
+    const auto yoffset = ypos - last_mouse_y_;
+
+    constexpr auto mouse_sensitivity = 0.01F;
+    position_ -= right_ * xoffset * mouse_sensitivity;
+    position_ -= up_ * yoffset * mouse_sensitivity;
+  }
+
+  // camera attributes
+  glm::vec3 position_{0.0F, 0.0F, 1.0F};
+  glm::vec3 front_{0.0F, 0.0F, 0.0F};
+  glm::vec3 up_{0.0F, 1.0F, 0.0F};
+  glm::vec3 right_ = glm::normalize(glm::cross(front_ - position_, up_));
+
+  // pan and rorate
+  float last_mouse_x_ = 0.0F;
+  float last_mouse_y_ = 0.0F;
+  TrackBall trackball_;
 };

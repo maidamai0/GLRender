@@ -4,6 +4,7 @@
 #include <utility>
 #include <vector>
 
+#include "app/app_state.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
 #include "fork_awesome.h"
@@ -27,8 +28,11 @@ void show() {
                    ImGuiWindowFlags_NoMove);
   static ImColor mesh_color{ImGui::GetStyle().Colors[ImGuiCol_PlotLines]};
   if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
-    make_singleton<common::Switch>().MeshColor(
-        glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w));
+    AppState().mesh_color_ = glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
+  }
+
+  if (ImGui::Button("ResetCamera")) {
+    Switch().ResetCamera();
   }
 
   auto static show_metrics = false;
@@ -63,7 +67,7 @@ void show() {
     ImGui::SameLine();
 
     if (ImGui::Button("Load mesh from file...")) {
-      make_singleton<common::Switch>().OpenFile();
+      Switch().OpenFile();
     }
     file_panel_bottom = ImGui::GetWindowPos().y + ImGui::GetWindowSize().y;
 

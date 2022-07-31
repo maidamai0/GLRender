@@ -1,4 +1,5 @@
 #include "render/renderer.h"
+#include "app/app_state.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
 
@@ -15,12 +16,10 @@ static constexpr auto vertex_shader_text = R"(
 
 layout(location = 0) in vec3 position;
 
-uniform mat4 projection;
-uniform mat4 view;
-uniform mat4 model;
+uniform mat4 mvp;
 
 void main() {
-  gl_Position = projection * view * model * vec4(position, 1.0);
+  gl_Position = mvp * vec4(position, 1.0);
 };
 )";
 
@@ -52,16 +51,11 @@ Renderder::Renderder() {
   glAttachShader(program_, fragment_shader);
   glLinkProgram(program_);
 
-  projection_location_ = glGetUniformLocation(program_, "projection");
-  view_location_ = glGetUniformLocation(program_, "view");
-  model_location_ = glGetUniformLocation(program_, "model");
+  mvp_location_ = glGetUniformLocation(program_, "mvp");
   color_location_ = glGetUniformLocation(program_, "color");
 
   // set draw type
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-  make_singleton<common::Switch>().MeshColor.connect(
-      [this](const glm::vec4& mesh_color) { this->color_ = mesh_color; });
 }
 
 void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
@@ -71,14 +65,11 @@ void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
 void Renderder::Update() {
   glUseProgram(program_);
 
-  glm::mat4 projection = glm::perspective(glm::radians(camera_.GetZoom()), camera_.GetAspect(), 0.1F, 100.0F);
-  glm::mat4 view = camera_.GetViewMatrix();
   glm::mat4 model = glm::mat4(1.0F);
+  const auto proj_view = camera_();
 
-  glUniformMatrix4fv(projection_location_, 1, GL_FALSE, glm::value_ptr(projection));
-  glUniformMatrix4fv(view_location_, 1, GL_FALSE, glm::value_ptr(view));
-  glUniformMatrix4fv(model_location_, 1, GL_FALSE, glm::value_ptr(model));
-  glUniform4fv(color_location_, 1, glm::value_ptr(color_));
+  glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, glm::value_ptr(proj_view * model));
+  glUniform4fv(color_location_, 1, glm::value_ptr(AppState().mesh_color_));
 
   for (auto* mesh : meshes_) {
     mesh->Render();

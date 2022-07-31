@@ -18,7 +18,7 @@ class MainWindow {
  private:
   void on_open_file();
   void spinner();
-  void show_spinner(const bool show);
+  void show_spinner(bool show);
 
   GLFWwindow* window_ = nullptr;
   std::unique_ptr<glr::render::Renderder> renderer_;

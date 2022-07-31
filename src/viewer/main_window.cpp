@@ -1,9 +1,11 @@
 #include "viewer/main_window.h"
+#include "app/app_state.h"
 #include "common/color.h"
 #include "common/log.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
 #include "common/use_busy_dialog.h"
+#include "io/input.hpp"
 #include "mesh/cube.h"
 #include "mesh/ply.h"
 #include "mesh/triangle.h"
@@ -97,7 +99,8 @@ void glfw_resize_callback(GLFWwindow* wind, int width, int height) {
   }
 
   glfwSwapBuffers(wind);
-  make_singleton<common::Switch>().Aspect((static_cast<float>(width) / static_cast<float>(height)));
+  AppState().window_width_ = width;
+  AppState().window_height_ = height;
 }
 
 void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
@@ -114,7 +117,9 @@ void glfw_mouse_move_callback(GLFWwindow* window, double xpos, double ypos) {
     return;
   }
 
-  make_singleton<common::Switch>().MousePosition(xpos, ypos);
+  AppState().mouse_xpos_ = static_cast<float>(xpos);
+  AppState().mouse_ypos_ = static_cast<float>(ypos);
+  Switch().MousePosition(static_cast<float>(xpos), static_cast<float>(ypos));
 }
 
 void glfw_mouse_callback(GLFWwindow* window, int button, int action, int mods) {
@@ -123,19 +128,15 @@ void glfw_mouse_callback(GLFWwindow* window, int button, int action, int mods) {
     return;
   }
 
-  io::MouseButton mouse_button = io::MouseButton::kLeft;
-  if (button == GLFW_MOUSE_BUTTON_RIGHT) {
-    mouse_button = io::MouseButton::kRight;
-  } else if (button == GLFW_MOUSE_BUTTON_MIDDLE) {
-    mouse_button = io::MouseButton::kMiddle;
+  if (button == GLFW_MOUSE_BUTTON_LEFT) {
+    AppState().mouse_mode_ = action == GLFW_PRESS ? io::MouseMode::kRotate : io::MouseMode::kNone;
+  } else if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+    AppState().mouse_mode_ = action == GLFW_PRESS ? io::MouseMode::kPan : io::MouseMode::kNone;
   }
 
-  io::MouseAction mouse_action = io::MouseAction::kPress;
-  if (action == GLFW_RELEASE) {
-    mouse_action = io::MouseAction::kRelease;
+  if (AppState().mouse_mode_ != io::MouseMode::kNone) {
+    LOGI("mouse mode: {}", io::MouseModeStr(AppState().mouse_mode_));
   }
-
-  make_singleton<common::Switch>().MouseButtonAction(mouse_button, mouse_action);
 }
 
 void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -143,7 +144,9 @@ void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
   if (ImGui::GetIO().WantCaptureMouse) {
     return;
   }
-  make_singleton<common::Switch>().Zoom(yoffset);
+
+  AppState().mouse_scroll_x_ += static_cast<float>(xoffset);
+  AppState().mouse_scroll_y_ += static_cast<float>(yoffset);
 }
 
 void GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
@@ -312,7 +315,7 @@ MainWindow::MainWindow() {
 
   renderer_ = std::make_unique<glr::render::Renderder>();
   NFD::Init();
-  make_singleton<common::Switch>().OpenFile.connect(&MainWindow::on_open_file, this);
+  Switch().OpenFile.connect(&MainWindow::on_open_file, this);
   style::init_style(1.0F, 1.0F);
 }
 
@@ -326,7 +329,6 @@ void MainWindow::Show() {
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
-
     int display_w = 0;
     int display_h = 0;
     glfwGetFramebufferSize(window_, &display_w, &display_h);
