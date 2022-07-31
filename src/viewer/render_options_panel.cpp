@@ -28,11 +28,11 @@ void show() {
                    ImGuiWindowFlags_NoMove);
   static ImColor mesh_color{AppState().mesh_color_.x, AppState().mesh_color_.y, AppState().mesh_color_.z,
                             AppState().mesh_color_.w};
-  if (ImGui::ColorEdit4("MeshColor", (float *)&mesh_color)) {
+  if (ImGui::ColorEdit4("Mesh Color", (float *)&mesh_color)) {
     AppState().mesh_color_ = glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
   }
 
-  if (ImGui::Button("ResetCamera")) {
+  if (ImGui::Button("Reset Camera")) {
     Switch().ResetCamera();
   }
 
@@ -40,8 +40,8 @@ void show() {
     Switch().OpenFile();
   }
 
-  static int draw_mode = 0;
-  ImGui::Combo("DrawMode", &draw_mode, "Points\0Lines\0Surface\0");
+  static int draw_mode = 2;
+  ImGui::Combo("Draw Mode", &draw_mode, "Points\0Lines\0Surface\0");
   switch (draw_mode) {
     case 0:
       AppState().draw_mode_ = app::DrawMode::Points;

@@ -256,7 +256,7 @@ MainWindow::MainWindow() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  window_ = glfwCreateWindow(800, 600, APP_NAME, nullptr, nullptr);
+  window_ = glfwCreateWindow(AppState().window_width_, AppState().window_height_, APP_NAME, nullptr, nullptr);
   if (window_ == nullptr) {
     LOGE("glfw create window failed");
     glfwTerminate();
