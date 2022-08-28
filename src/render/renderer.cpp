@@ -1,4 +1,5 @@
 #include "render/renderer.h"
+#include <algorithm>
 #include "app/app_state.h"
 #include "common/singleton.h"
 #include "common/swtich.h"
@@ -55,8 +56,8 @@ Renderder::Renderder() {
   color_location_ = glGetUniformLocation(program_, "color");
 }
 
-void Renderder::AddMesh(glr::mesh::Mesh* mesh) {
-  meshes_.push_back(mesh);
+void Renderder::AddMesh(std::unique_ptr<glr::mesh::Mesh> mesh) {
+  meshes_.emplace_back(std::move(mesh));
 }
 
 void Renderder::Update() {
@@ -65,9 +66,9 @@ void Renderder::Update() {
   const auto proj_view = camera_();
 
   // set draw type
-  for (auto* mesh : meshes_) {
+  for (auto& mesh : meshes_) {
     glm::mat4 model = glm::mat4(1.0F);
-    model = glm::translate(model, -mesh->Origin());
+    model = glm::translate(model, -mesh->Center());
     glUniformMatrix4fv(mvp_location_, 1, GL_FALSE, glm::value_ptr(proj_view * model));
 
     // draw face

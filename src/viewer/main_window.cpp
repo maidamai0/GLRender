@@ -26,6 +26,8 @@
 
 #include <array>
 #include <cmath>
+#include <filesystem>
+#include <memory>
 #include <string>
 
 namespace {
@@ -320,12 +322,6 @@ MainWindow::MainWindow() {
 }
 
 void MainWindow::Show() {
-  // glr::mesh::Triangle triangle;
-  // renderer_->AddMesh(&triangle);
-
-  // glr::mesh::Cube cube(window_);
-  // renderer_->AddMesh(&cube);
-
   while (glfwWindowShouldClose(window_) == 0) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
@@ -359,16 +355,15 @@ void MainWindow::Show() {
 }
 
 void MainWindow::on_open_file() {
-  nfdchar_t* outPath = nullptr;
+  nfdchar_t* out_path = nullptr;
   std::array<nfdfilteritem_t, 1> filterItem = {{"mesh", "ply"}};
-  nfdresult_t result = NFD_OpenDialog(&outPath, filterItem.data(), filterItem.size(), nullptr);
+  nfdresult_t result = NFD_OpenDialog(&out_path, filterItem.data(), filterItem.size(), nullptr);
   if (result == NFD_OKAY) {
-    // FIXME (tonghao): 2021-07-26
-    // use shared ptr
-    renderer_->AddMesh(new glr::mesh::PLY(outPath));
-    glfwSetWindowTitle(window_, outPath);
-    LOGI(outPath);
-    NFD_FreePath(outPath);
+    const auto file_path = std::filesystem::path(out_path).generic_string();
+    renderer_->AddMesh(std::make_unique<glr::mesh::PLY>(file_path));
+    glfwSetWindowTitle(window_, file_path.c_str());
+    LOGI(file_path);
+    NFD_FreePath(out_path);
   } else if (result == NFD_CANCEL) {
     LOGW("User pressed cancel");
   } else {

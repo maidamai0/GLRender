@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <utility>
 #include "common/singleton.h"
@@ -22,11 +23,13 @@ struct bound {
 
 class Mesh {
  public:
-  explicit Mesh(std::string file_path) : file_path_(std::move(file_path)) {}
-  Mesh() = default;
+  explicit Mesh(const std::filesystem::path& file_path = {}) : file_path_(file_path.generic_string()) {
+  }
   virtual ~Mesh() = default;
+
   virtual void Render() = 0;
-  [[nodiscard]] auto Origin() const -> glm::vec3 {
+
+  [[nodiscard]] auto Center() const -> glm::vec3 {
     return {bound_.x.middle(), bound_.y.middle(), bound_.z.middle()};
   }
 

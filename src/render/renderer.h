@@ -6,17 +6,18 @@
 #include "glad/glad.h"
 #include "glm/fwd.hpp"
 
+#include <memory>
 #include <vector>
 
 namespace glr::render {
 class Renderder {
  public:
   Renderder();
-  void AddMesh(glr::mesh::Mesh* mesh);
+  void AddMesh(std::unique_ptr<glr::mesh::Mesh> mesh);
   void Update();
 
  private:
-  std::vector<glr::mesh::Mesh*> meshes_;
+  std::vector<std::unique_ptr<glr::mesh::Mesh>> meshes_;
 
   GLuint program_ = 0;
   GLint mvp_location_ = 0;
