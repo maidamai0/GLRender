@@ -16,11 +16,15 @@ static constexpr auto vertex_shader_text = R"(
 #version 410
 
 layout(location = 0) in vec3 position;
+layout(location = 1) in vec3 normal;
 
 uniform mat4 mvp;
 
+out vec3 normal_f;
+
 void main() {
   gl_Position = mvp * vec4(position, 1.0);
+  normal_f = normal;
 };
 )";
 
@@ -28,10 +32,11 @@ void main() {
 static constexpr auto fragment_shader_text = R"(
 #version 410
 
-uniform vec4 color;
+// uniform vec4 color;
+in vec3 normal_f;
 
 void main() {
-  gl_FragColor = color;
+  gl_FragColor = vec4(-normal_f, 1.0);
 };
 )";
 

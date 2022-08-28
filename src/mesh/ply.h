@@ -15,6 +15,8 @@
 #include <vector>
 
 #include "glad/glad.h"
+#include "glm/detail/qualifier.hpp"
+#include "glm/fwd.hpp"
 #include "mesh/mesh.h"
 #include "render/camera.h"
 
@@ -40,9 +42,7 @@ class PLY : public Mesh {
 
   std::vector<std::array<double, 3>> vertices_;
   std::vector<unsigned int> faces_indices_;
-  // std::vector<std::array<double, 3>> normals_;
-  // std::vector<std::array<double, 3>> texcoords_;
-  // std::vector<std::array<double, 3>> colors_;
+  std::vector<glm::vec3> normals_;
 
   GLuint vao_ = 0;
 
