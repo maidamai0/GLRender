@@ -40,7 +40,7 @@ class TrackBall {
  private:
   // see https://www.khronos.org/opengl/wiki/Object_Mouse_Trackball for details
   static float get_z(float mouse_x, float mouse_y) {
-    const float tmp = std::powf(mouse_x, 2) + std::powf(mouse_y, 2);
+    const float tmp = std::pow(mouse_x, 2) + std::pow(mouse_y, 2);
     constexpr auto radius = 1.0F;
 
     // use sphere
