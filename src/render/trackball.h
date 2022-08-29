@@ -48,7 +48,7 @@ class TrackBall {
       return sqrtf(radius - tmp);
     }
 
-    return radius / 2 / std::sqrtf(tmp);
+    return radius / 2 / std::sqrt(tmp);
   }
 
   glm::quat quaternion_{1, 0, 0, 0};
