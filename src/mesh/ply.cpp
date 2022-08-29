@@ -45,6 +45,8 @@ PLY::PLY(std::string path) : Mesh(std::move(path)) {
   std::thread(&PLY::load_from_file, this, std::move(path)).detach();
 }
 
+PLY::~PLY() = default;
+
 void PLY::Render() {
   if (should_create_buffer_) {
     create_vertex_buffer();

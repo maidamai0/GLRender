@@ -29,7 +29,7 @@ namespace glr::mesh {
 class PLY : public Mesh {
  public:
   explicit PLY(std::string);
-  ~PLY() override = default;
+  ~PLY() override;
 
   no_copy(PLY);
   no_move(PLY);
