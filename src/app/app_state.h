@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <variant>
 #include "common/singleton.h"
+#include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
 #include "io/input.hpp"
 
@@ -39,9 +40,10 @@ class State {
   io::MouseMode mouse_mode_ = io::MouseMode::kNone;
 
   // renderering
-  glm::vec4 mesh_color_{0.8F, 0.4F, 0.2F, 1.0};
-  glm::vec4 line_color_{0.8F, 0.4F, 0.2F, 1.0};
-  glm::vec4 point_color_{0.8F, 0.4F, 0.2F, 1.0};
+  glm::vec4 mesh_color_{0.761F, 0.761F, 0.761F, 1.0};
+  glm::vec4 line_color_{0.0F, 0.0F, 0.0F, 1.0};
+  glm::vec4 point_color_{0.0F, 0.0F, 0.0F, 1.0};
+  glm::vec3 light_pos_{0.0F, 1.0F, 0.0F};
   bool draw_line_{false};
   bool draw_points{false};
   bool draw_face{true};

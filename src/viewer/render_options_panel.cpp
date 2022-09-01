@@ -9,6 +9,7 @@
 #include "common/swtich.h"
 #include "fork_awesome.h"
 #include "glm/fwd.hpp"
+#include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
 #include "global_render_options.h"
 #include "imgui/imgui.h"
@@ -35,12 +36,19 @@ void show() {
     Switch().OpenFile();
   }
 
+  float pos_min = -1.0F;
+  float pos_max = 1.0F;
+  ImGui::SliderScalar("light position x", ImGuiDataType_Float, &AppState().light_pos_.x, &pos_min, &pos_max);
+  ImGui::SliderScalar("light position y", ImGuiDataType_Float, &AppState().light_pos_.y, &pos_min, &pos_max);
+  ImGui::SliderScalar("light position z", ImGuiDataType_Float, &AppState().light_pos_.z, &pos_min, &pos_max);
+
+  static const auto color_pick_flags =
+      ImGuiColorEditFlags_Float | ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel;
   ImGui::Checkbox("Draw Lines ", &AppState().draw_line_);
   ImGui::SameLine();
   static ImColor line_color{AppState().line_color_.x, AppState().line_color_.y, AppState().line_color_.z,
                             AppState().line_color_.w};
-  if (ImGui::ColorEdit4("Line Color", (float *)&line_color,
-                        ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+  if (ImGui::ColorEdit4("Line Color", (float *)&line_color, color_pick_flags)) {
     AppState().line_color_ = glm::vec4(line_color.Value.x, line_color.Value.y, line_color.Value.z, line_color.Value.w);
   }
 
@@ -48,8 +56,7 @@ void show() {
   ImGui::SameLine();
   static ImColor point_color{AppState().point_color_.x, AppState().point_color_.y, AppState().point_color_.z,
                              AppState().point_color_.w};
-  if (ImGui::ColorEdit4("Point Color", (float *)&point_color,
-                        ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+  if (ImGui::ColorEdit4("Point Color", (float *)&point_color, color_pick_flags)) {
     AppState().point_color_ =
         glm::vec4(point_color.Value.x, point_color.Value.y, point_color.Value.z, point_color.Value.w);
   }
@@ -59,8 +66,7 @@ void show() {
     ImGui::SameLine();
     static ImColor mesh_color{AppState().mesh_color_.x, AppState().mesh_color_.y, AppState().mesh_color_.z,
                               AppState().mesh_color_.w};
-    if (ImGui::ColorEdit4("Mesh Color", (float *)&mesh_color,
-                          ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_NoLabel)) {
+    if (ImGui::ColorEdit4("Mesh Color", (float *)&mesh_color, color_pick_flags)) {
       AppState().mesh_color_ =
           glm::vec4(mesh_color.Value.x, mesh_color.Value.y, mesh_color.Value.z, mesh_color.Value.w);
     }

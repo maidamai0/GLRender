@@ -21,6 +21,8 @@ class Renderder {
 
   GLuint program_ = 0;
   GLint mvp_location_ = 0;
+  GLint light_location_ = 0;
+  GLint camera_location_ = 0;
   GLint color_location_ = 0;
   Camera camera_;
 };

@@ -105,8 +105,7 @@ void glfw_resize_callback(GLFWwindow* wind, int width, int height) {
   AppState().window_height_ = height;
 }
 
-void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action,
-                       int mods) {
+void glfw_key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
     LOGI("user request to exit");
     glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -151,8 +150,7 @@ void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
   AppState().mouse_scroll_y_ += static_cast<float>(yoffset);
 }
 
-void GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
-                            GLenum severity, GLsizei length, const GLchar* msg,
+void GLDebugMessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg,
                             const void* data) {
   std::string _source;
   std::string _type;
@@ -244,8 +242,7 @@ void GLDebugMessageCallback(GLenum source, GLenum type, GLuint id,
       break;
   }
 
-  LOGD("{}: {} of {} severity, raised from {}: {}", id, _type, _severity,
-       _source, msg);
+  LOGD("{}: {} of {} severity, raised from {}: {}", id, _type, _severity, _source, msg);
 }
 
 MainWindow::MainWindow() {
@@ -258,6 +255,7 @@ MainWindow::MainWindow() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  glfwWindowHint(GLFW_SAMPLES, 4);
   window_ = glfwCreateWindow(AppState().window_width_, AppState().window_height_, APP_NAME, nullptr, nullptr);
   if (window_ == nullptr) {
     LOGE("glfw create window failed");
@@ -296,12 +294,12 @@ MainWindow::MainWindow() {
   // different contexts but isn't necessary for our simple use case.
   glDebugMessageCallback(GLDebugMessageCallback, nullptr);
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_MULTISAMPLE);
 
   //  set window icon
   {
     GLFWimage icon;
-    icon.pixels = stbi_load_from_memory(icon_png, sizeof(icon_png), &icon.width,
-                                        &icon.height, nullptr, 4);
+    icon.pixels = stbi_load_from_memory(icon_png, sizeof(icon_png), &icon.width, &icon.height, nullptr, 4);
     glfwSetWindowIcon(window_, 1, &icon);
     stbi_image_free(icon.pixels);
   }
