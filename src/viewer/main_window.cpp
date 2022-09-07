@@ -32,6 +32,8 @@
 
 namespace {
 constexpr auto kGLSLVersion = "#version 410";
+constexpr auto kCullFace = std::array<int, 3>{GL_FRONT, GL_BACK, GL_FRONT_AND_BACK};
+constexpr auto kFrontFace = std::array<int, 2>{GL_CW, GL_CCW};
 }  // namespace
 
 void MainWindow::spinner() {
@@ -321,6 +323,14 @@ MainWindow::MainWindow() {
 
 void MainWindow::Show() {
   while (glfwWindowShouldClose(window_) == 0) {
+    if (AppState().enable_cull_face) {
+      glEnable(GL_CULL_FACE);
+      glCullFace(kCullFace.at(AppState().cull_face));
+      glFrontFace(kFrontFace.at(AppState().front_face));
+    } else {
+      glDisable(GL_CULL_FACE);
+    }
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glfwPollEvents();
     int display_w = 0;

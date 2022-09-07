@@ -47,6 +47,9 @@ class State {
   bool draw_line_{false};
   bool draw_points{false};
   bool draw_face{true};
+  bool enable_cull_face{false};
+  int cull_face{1};   // 0 for font, 1 for back, 2 for front and back
+  int front_face{1};  // 0 for cw, 1 for ccw
 };
 
 }  // namespace app

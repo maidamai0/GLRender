@@ -72,6 +72,14 @@ void show() {
     }
   }
 
+  {
+    ImGui::Checkbox("Enable Cull Face ", &AppState().enable_cull_face);
+    if (AppState().enable_cull_face) {
+      ImGui::Combo("Cull Face", &AppState().cull_face, "Font\0Back\0Front and Back");
+      ImGui::Combo("Front Face", &AppState().front_face, "CW\0CCW");
+    }
+  }
+
   auto static show_metrics = false;
   ImGui::Checkbox("Window Metrics", &show_metrics);
   if (show_metrics) {
